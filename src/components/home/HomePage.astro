@@ -1,0 +1,189 @@
+---
+import { getCollection } from 'astro:content';
+import ProfileSidebar from './ProfileSidebar.astro';
+import ProjectsList from './ProjectsList.astro';
+import LeadershipList from './LeadershipList.astro';
+import SiteFooterLinks from './SiteFooterLinks.astro';
+import { homeContent, type Lang } from '../../data/home';
+
+interface Props {
+  lang: Lang;
+  altHref: string;
+}
+
+  
+
+const { lang, altHref } = Astro.props;
+const content = homeContent[lang];
+const basePath = lang === 'en' ? '/projects' : '/ru/projects';
+const leadershipBasePath = lang === 'en' ? '/leadership' : '/ru/leadership';
+
+const projects = (await getCollection('projects', (entry) => entry.id.startsWith(`${lang}/`))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const leadershipItems = (
+  await getCollection('leadership', (entry) => entry.id.startsWith(`${lang}/`))
+)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({
+    title: entry.data.title,
+    year: entry.data.year ?? '',
+    href: `${leadershipBasePath}/${entry.id.split('/')[1]}`,
+  }));
+---
+
+<div class="page">
+  <div class="content">
+    <ProfileSidebar lang={lang} altHref={altHref} />
+    <div class="work">
+      <div class="wrapper">
+        <ProjectsList projects={projects} basePath={basePath} />
+      </div>
+      <LeadershipList heading={content.leadershipHeading} items={leadershipItems} />
+      <SiteFooterLinks lang={lang} />
+    </div>
+  </div>
+</div>
+
+<style>
+  .page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .content {
+    display: flex;
+    gap: 86px;
+    align-items: flex-start;
+    max-width: 994px;
+    width: 100%;
+    padding: 45px 24px 60px;
+  }
+
+  .work {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+  }
+
+  @media (max-width: 994px) {
+    .content {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .work {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 549px) {
+    .content {
+      width: 100vw;
+      max-width: 100vw;
+      padding-inline: 20px;
+    }
+  }
+</style>
+
+<script>
+  import { animate, stagger } from 'framer-motion/dom';
+
+  // Module scope persists across Astro's client-side navigations (e.g.
+  // switching language), so this flag survives until a real page reload —
+  // that's what keeps the reveal from re-triggering on internal navigation.
+  let hasInitialized = false;
+
+  const revealTransition = { duration: 1.9, ease: [0.16, 1, 0.3, 1] as const };
+
+  function hide(el: HTMLElement) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+  }
+
+  function reveal(target: HTMLElement | HTMLElement[], delay?: ReturnType<typeof stagger>) {
+    const els = Array.isArray(target) ? target : [target];
+    const controls = animate(
+      els,
+      { opacity: [0, 1], y: [24, 0] },
+      delay ? { ...revealTransition, delay } : revealTransition,
+    );
+
+    // WAAPI-accelerated animations hold their end value without writing it
+    // into the `style` attribute. Commit the end state as real inline
+    // styles once each animation finishes so it survives any later
+    // snapshotting (e.g. Astro's back/forward cache).
+    controls.finished
+      .then(() => {
+        els.forEach((el) => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+      })
+      .catch(() => {});
+  }
+
+  function initReveal() {
+    if (hasInitialized) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const items = document.querySelectorAll<HTMLElement>('.page [data-reveal]');
+    const groups = document.querySelectorAll<HTMLElement>('.page [data-reveal-group]');
+    if (!items.length && !groups.length) return;
+
+    hasInitialized = true;
+
+    const observerOptions: IntersectionObserverInit = {
+      rootMargin: '0px 0px -10% 0px',
+      threshold: 0.15,
+    };
+
+    // Individual sections (sidebar, each project card, the leadership
+    // block): reveal the element itself the first time it scrolls into
+    // view. Elements already on-screen at load fire immediately, which is
+    // what gives the sidebar its old "intro" feel for free.
+    const itemObserver = new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        obs.unobserve(entry.target);
+        reveal(entry.target as HTMLElement);
+      }
+    }, observerOptions);
+
+    items.forEach((el) => {
+      hide(el);
+      itemObserver.observe(el);
+    });
+
+    // Groups (footer links): reveal the container's children one by one
+    // with a stagger once the container scrolls into view.
+    const groupObserver = new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        obs.unobserve(entry.target);
+        const children = Array.from(entry.target.children) as HTMLElement[];
+        reveal(children, stagger(0.08));
+      }
+    }, observerOptions);
+
+    groups.forEach((el) => {
+      const children = Array.from(el.children) as HTMLElement[];
+      children.forEach(hide);
+      groupObserver.observe(el);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initReveal);
+</script>

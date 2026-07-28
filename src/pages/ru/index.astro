@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HomePage from '../../components/home/HomePage.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'ru';
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} title={t('site.title')}>
+  <HomePage lang={lang} altHref="/" />
+</Layout>

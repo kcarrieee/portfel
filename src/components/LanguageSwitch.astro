@@ -1,0 +1,193 @@
+---
+import { languages, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Path to the equivalent page in the other language */
+  altHref: string;
+}
+
+const { lang, altHref } = Astro.props;
+const tabOrder = Object.keys(languages) as Lang[];
+const tabLabel: Record<Lang, string> = { en: 'ENG', ru: 'RU' };
+const otherLang = tabOrder.find((candidate) => candidate !== lang)!;
+// unchecked = first language (en), checked = second language (ru)
+const isChecked = lang === tabOrder[1];
+
+// Labelled in the *target* language, so it's understandable regardless of
+// which language the page is currently in.
+const switchAriaLabel: Record<Lang, string> = {
+  en: 'Switch language to English',
+  ru: 'Переключить язык на русский',
+};
+---
+
+<div class="language-switch" data-lang-switch>
+  <input
+    type="checkbox"
+    switch
+    role="switch"
+    checked={isChecked}
+    aria-label={switchAriaLabel[otherLang]}
+    class="switch-input"
+    data-lang-switch-input
+  />
+  <div class="switch-visual" aria-hidden="true">
+    <span class="switch-thumb"></span>
+    {
+      tabOrder.map((tabLang) => (
+        <span class:list={['switch-label', { 'is-active': tabLang === lang }]}>
+          {tabLabel[tabLang]}
+        </span>
+      ))
+    }
+  </div>
+  <!--
+    Real navigation goes through this actual link, not a manual navigate()
+    call — Astro's ClientRouter already intercepts real <a> clicks
+    site-wide (identical, already-proven code path for every other link on
+    the site). The checkbox exists for semantics/haptics and forwards a
+    programmatic click here on change, rather than reimplementing routing.
+  -->
+  <a
+    class="switch-nav-link"
+    href={altHref}
+    hreflang={otherLang}
+    tabindex="-1"
+    aria-hidden="true"
+    data-lang-switch-link
+  >
+    {tabLabel[otherLang]}
+  </a>
+  <noscript>
+    <a class="switch-noscript-link" href={altHref} hreflang={otherLang}>
+      {tabLabel[otherLang]}
+    </a>
+  </noscript>
+</div>
+
+<script>
+  import { triggerHaptic } from '../utils/haptics';
+
+  function initLanguageSwitch() {
+    document.querySelectorAll<HTMLElement>('[data-lang-switch]').forEach((wrapper) => {
+      const input = wrapper.querySelector<HTMLInputElement>('[data-lang-switch-input]');
+      const link = wrapper.querySelector<HTMLAnchorElement>('[data-lang-switch-link]');
+      if (!input || !link) return;
+
+      // `change` only fires on a genuine value flip caused by user
+      // interaction (click/tap/keyboard) — never on initial render or when
+      // we programmatically set `.checked`, so this naturally satisfies
+      // "only when the language actually changes, and never on sync."
+      input.addEventListener('change', () => {
+        triggerHaptic();
+        link.click();
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initLanguageSwitch);
+</script>
+
+<style>
+  .language-switch {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .switch-input {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    min-width: 44px;
+    min-height: 44px;
+    margin: 0;
+    appearance: none;
+    background: none;
+    border: none;
+    opacity: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .switch-nav-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    color: transparent;
+    pointer-events: none;
+  }
+
+  .switch-visual {
+    position: relative;
+    display: flex;
+    padding: 2px;
+    border: 1px solid #282828c0;
+    border-radius: 10px;
+    transition: transform 150ms ease;
+  }
+
+  .switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 44px;
+    height: calc(100% - 4px);
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .switch-input:checked ~ .switch-visual .switch-thumb {
+    transform: translateX(100%);
+  }
+
+  .switch-input:active ~ .switch-visual {
+    transform: scale(0.98);
+  }
+
+  .switch-input:focus-visible ~ .switch-visual {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+
+  .switch-label {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text-muted-5);
+    transition: color 200ms ease;
+  }
+
+  .switch-label.is-active {
+    color: var(--color-text);
+  }
+
+  .switch-noscript-link {
+    margin-left: 8px;
+    color: var(--color-text-muted-5);
+    font-size: 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .switch-thumb,
+    .switch-visual,
+    .switch-label {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>

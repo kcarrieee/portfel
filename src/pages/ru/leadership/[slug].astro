@@ -1,0 +1,65 @@
+---
+import { getCollection, render } from 'astro:content';
+import DetailLayout from '../../../components/detail/DetailLayout.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+export async function getStaticPaths() {
+  const items = await getCollection('leadership', (entry) => entry.id.startsWith('ru/'));
+  return items.map((item) => ({
+    params: { slug: item.id.split('/')[1] },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const { Content, headings } = await render(item);
+
+const lang = 'ru';
+const t = useTranslations(lang);
+const slug = item.id.split('/')[1];
+---
+
+<DetailLayout
+  lang={lang}
+  altHref={`/leadership/${slug}`}
+  title={item.data.title}
+  backHref="/ru/"
+  backLabel={t('back.home')}
+  cover={item.data.cover}
+  coverAlt={item.data.title}
+  headings={headings}
+>
+  <header class="header" slot="header">
+    <div class="title-row">
+      <h1 class="title">{item.data.title}</h1>
+      {item.data.year && <p class="year">{item.data.year}</p>}
+    </div>
+  </header>
+  <Content />
+</DetailLayout>
+
+<style>
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .title {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 24px;
+  }
+
+  .year {
+    margin: 0;
+    color: var(--color-text-muted-3);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+</style>

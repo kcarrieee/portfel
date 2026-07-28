@@ -1,0 +1,54 @@
+@import '@fontsource-variable/inter-tight';
+
+:root {
+  --color-bg: #111111;
+  --color-card-bg: #272727;
+  --color-text: #f7f7f7;
+  --color-text-muted-1: #9c9b9b;
+  --color-text-muted-2: #777777;
+  --color-text-muted-3: #585858;
+  --color-text-muted-4: #4c4c4c;
+  --color-text-muted-5: #616161;
+  --color-border: #2f2f2f;
+  --color-link-underline: #6e6e73;
+  --color-block-heading: #ffffff;
+  --color-block-text: #989898;
+
+  --font-sans:
+    'graphik', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 22px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+

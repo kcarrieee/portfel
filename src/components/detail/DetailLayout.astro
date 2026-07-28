@@ -1,0 +1,289 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LanguageSwitch from '../LanguageSwitch.astro';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  lang: Lang;
+  altHref: string;
+  title: string;
+  backHref: string;
+  backLabel: string;
+  cover?: string;
+  coverAlt?: string;
+  headings?: MarkdownHeading[];
+}
+
+const {
+  lang,
+  altHref,
+  title,
+  backHref,
+  backLabel,
+  cover,
+  coverAlt = '',
+  headings = [],
+} = Astro.props;
+
+const t = useTranslations(lang);
+const tocHeadings = headings.filter((heading) => heading.depth === 2);
+---
+
+<Layout lang={lang} title={title}>
+  {
+    tocHeadings.length > 0 && (
+      <aside class="toc">
+        <a class="toc-back" href={backHref}>
+          <img class="toc-back-arrow" src="/icons/icon-arrow.svg" alt="" width="16" height="16" />
+          {t('toc.index')}
+        </a>
+        <nav class="toc-list">
+          {tocHeadings.map((heading) => (
+            <a class="toc-link" href={`#${heading.slug}`} data-toc-link={heading.slug}>
+              {heading.text}
+            </a>
+          ))}
+        </nav>
+      </aside>
+    )
+  }
+  <div class="page">
+    <nav class="nav">
+     
+      <a class="back" href={backHref}>
+        <img class="back-arrow" src="/icons/icon-arrow.svg" alt="" width="16" height="16" />
+        {backLabel}
+      </a>
+      <LanguageSwitch lang={lang} altHref={altHref} />
+    </nav>
+    {
+      cover && (
+        <div class="cover">
+          <img src={cover} alt={coverAlt} />
+        </div>
+      )
+    }
+    <slot name="header" />
+    <div class="content">
+      <slot />
+    </div>
+  </div>
+</Layout>
+
+<script>
+  function initToc() {
+    const headingEls = document.querySelectorAll<HTMLElement>('.content h2[id]');
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (headingEls.length === 0 || tocLinks.length === 0) return;
+
+    const setActive = (id: string) => {
+      tocLinks.forEach((link) => {
+        link.classList.toggle('is-active', link.dataset.tocLink === id);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -80% 0px', threshold: 0 },
+    );
+
+    headingEls.forEach((heading) => observer.observe(heading));
+    setActive(headingEls[0].id);
+  }
+
+  document.addEventListener('astro:page-load', initToc);
+</script>
+
+<style>
+  .toc {
+    display: none;
+  }
+
+  @media (min-width: 1280px) {
+    .toc {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: fixed;
+      top: 45px;
+      left: 40px;
+      width: 200px;
+    }
+  }
+
+  .toc-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-muted-2);
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .toc-back-arrow {
+    transform: rotate(-90deg);
+  }
+
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toc-link {
+    color: var(--color-text-muted-2);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .toc-link.is-active {
+    color: var(--color-text);
+  }
+
+  .page {
+    max-width: 680px;
+    width: 100%;
+    margin-inline: auto;
+    padding: 45px 24px 60px;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .back {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-muted-2);
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+  @media (max-width: 1279px) {
+    .back {
+      display: flex;
+    }
+  }
+
+  .back-arrow {
+    transform: rotate(-90deg);
+  }
+
+  .cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 670 / 340;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-card-bg);
+    margin-bottom: 32px;
+  }
+
+  .cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .content :global(h2) {
+    font-size: 14px;
+    font-weight: normal;
+    color: var(--color-block-heading);
+    letter-spacing: 0.02em;
+    margin: 32px 0 8px;
+    margin-top:100px;
+  }
+  
+
+
+  .content :global(h2:first-child) {
+    margin-top:100px;
+  }
+
+  .content :global(p) {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-block-text);
+    margin: 0 0 16px;
+  }
+
+  .content :global(ul),
+  .content :global(ol) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 16px;
+    padding-left: 20px;
+  }
+
+  .content :global(li) {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-block-text);
+  }
+  .content :global(a) {
+    color: #fff;
+    position: relative;
+    display: inline;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #666667; /* soft grey */
+    transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .content :global(a)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  width: 100%;
+  height: 0.5px;
+  background: #ffffff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);   
+}
+.content :global(a):hover {
+  border-color: transparent;
+}
+.content :global(a):hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+  
+
+.content :global(li)::marker {
+    color: var(--color-text);
+}
+
+.content :global(img) {
+    width: 100%;
+    height: fit-content; 
+    border-radius: 8px;
+    margin-block: 20px;
+}
+
+  @media (max-width: 994px) {
+    .page {
+      max-width: 100vw;
+      width: 100vw;
+      padding-inline: 20px;
+    }
+   
+  }
+</style>

@@ -1,0 +1,145 @@
+---
+import LanguageSwitch from '../LanguageSwitch.astro';
+import { links, homeContent, type Lang } from '../../data/home';
+
+
+interface Props {
+  lang: Lang;
+  altHref: string;
+}
+
+const { lang, altHref } = Astro.props;
+const content = homeContent[lang];
+---
+
+<div class="sidebar" data-reveal>
+  <div class="switch-row">
+    <LanguageSwitch lang={lang} altHref={altHref} />
+  </div>
+
+  <div class="profile">
+    <div class="photo" aria-hidden="true" transition:persist="profile-photo">
+    </div>
+
+    <div class="text">
+      <p class="name">{content.name}</p>
+      <p class="bio">
+        {content.bioIntro}{' '}
+        <a class="link" href={links.wildberries} target="_blank" rel="noopener noreferrer"
+          >{content.companyName}</a
+        >. {content.bioRest}
+      </p>
+    </div>
+
+    <p class="bio-links">
+      {content.bioPrevious}{' '}
+      <a class="icon-link" href={links.resume}>
+        <img src="/icons/icon-resume.svg" alt="" width="16" height="16" />{content.resumeLabel}
+      </a>{' '}
+      {content.and}{' '}
+      <a class="icon-link" href="#contact">
+        <img src="/icons/icon-mail.svg" alt="" width="16" height="16" />{content.socialsLabel}
+      </a>
+    </p>
+  </div>
+</div>
+
+<style>
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    align-items: flex-start;
+    justify-content: center;
+    position: sticky;
+    top: 45px;
+    width: 290px;
+    flex-shrink: 0;
+  }
+
+  .switch-row {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    position: absolute;
+    top:0;
+    left:0;
+  }
+
+  @media (max-width: 994px) {
+    .sidebar {
+      position: static;
+      width: 100%;
+    }
+  }
+
+  .profile {
+    display: flex;
+    padding-top: 28px;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .photo {
+    width: 168px;
+    height: 168px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    background: url("../../assets/projects/me2.png") center / cover no-repeat;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .name {
+    margin: 0;
+    color: var(--color-text-muted-1);
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  .bio {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--color-link-underline);
+  }
+
+  .bio-links {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .icon-link {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-link-underline);
+    padding-inline:2px;
+    position: relative;
+    top: 3px;
+  }
+.icon-link img {
+  display: inline-block;
+  align-self: center;
+  position: relative;
+  top: 0px;
+}
+  
+</style>

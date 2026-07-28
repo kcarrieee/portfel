@@ -1,0 +1,114 @@
+---
+import { getCollection, render } from 'astro:content';
+import DetailLayout from '../../components/detail/DetailLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', (entry) => entry.id.startsWith('en/'));
+  return projects.map((project) => ({
+    params: { slug: project.id.split('/')[1] },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content, headings } = await render(project);
+
+const lang = 'en';
+const t = useTranslations(lang);
+const slug = project.id.split('/')[1];
+const hasMeta = project.data.duration || project.data.platform || project.data.role;
+---
+
+<DetailLayout
+  lang={lang}
+  altHref={`/ru/projects/${slug}`}
+  title={project.data.title}
+  backHref="/"
+  backLabel={t('project.back')}
+  cover={project.data.cover}
+  coverAlt={project.data.title}
+  headings={headings}
+>
+  <header class="header" slot="header">
+    <div class="title-row">
+      <h1 class="title">{project.data.title}</h1>
+      {project.data.year && <p class="year">{project.data.year}</p>}
+    </div>
+    {
+      hasMeta && (
+        <div class="meta-row">
+          {project.data.duration && (
+            <p class="field">
+              <span class="label">{t('project.duration')}:</span>{' '}
+              <span class="value">{project.data.duration}</span>
+            </p>
+          )}
+          {project.data.platform && (
+            <p class="field">
+              <span class="label">{t('project.platform')}:</span>{' '}
+              <span class="value">{project.data.platform}</span>
+            </p>
+          )}
+          {project.data.role && (
+            <p class="field">
+              <span class="label">{t('project.role')}:</span>{' '}
+              <span class="value">{project.data.role}</span>
+            </p>
+          )}
+        </div>
+      )
+    }
+  </header>
+  <Content />
+</DetailLayout>
+
+<style>
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .title {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: normal;
+  }
+
+  .year {
+    margin: 0;
+    color: var(--color-text-muted-3);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .field {
+    display: flex;
+    gap: 4px;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .label {
+    color: var(--color-text-muted-4);
+  }
+
+  .value {
+    color: var(--color-text-muted-2);
+  }
+</style>

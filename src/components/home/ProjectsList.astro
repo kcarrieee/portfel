@@ -1,0 +1,51 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectCardLink from './ProjectCardLink.astro';
+import CoverVisual from './visuals/CoverVisual.astro';
+import VideoVisual from './visuals/VideoVisual.astro';
+
+import bspbImage from '../../assets/projects/project_image_bsp.png';
+import puzzleImage from '../../assets/projects/image_puzzle.png';
+import wbImage from '../../assets/projects/image.png';
+import tulipImage from '../../assets/projects/tulip_br.png';
+import chanityImage from '../../assets/projects/chanity.png';
+import expiVideo from '../../assets/projects/expi_video_final.mp4';
+import alfaBankVideo from '../../assets/projects/alfa_bank.mp4';
+
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+  basePath: string;
+}
+
+const { projects, basePath } = Astro.props;
+---
+
+<div class="projects">
+  {
+    projects.map((project) => {
+      const slug = project.id.split('/')[1];
+      const href = `${basePath}/${slug}`;
+      return (
+        <ProjectCardLink href={href} title={project.data.title} year={project.data.year ?? ''}>
+          {slug === 'bank-spb' && <CoverVisual image={bspbImage} alt={project.data.title} />}
+          {slug === 'ai-concierge' && <VideoVisual src={expiVideo} />}
+          {slug === 'wb-chat' && <CoverVisual image={wbImage} alt={project.data.title} />}
+          {slug === 'puzzle-dom' && <CoverVisual image={puzzleImage} alt={project.data.title} />}
+          {slug === 'alpha-bank' && <VideoVisual src={alfaBankVideo} />}
+          {slug === 'project-brand' && <CoverVisual image={tulipImage} alt={project.data.title} />}
+          {slug === 'chanity-brand' && <CoverVisual image={chanityImage} alt={project.data.title} />}
+        </ProjectCardLink>
+      );
+    })
+  }
+</div>
+
+<style>
+  .projects {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    width: 100%;
+  }
+</style>

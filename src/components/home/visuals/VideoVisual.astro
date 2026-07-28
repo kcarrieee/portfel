@@ -1,0 +1,46 @@
+---
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+---
+
+<video class="video" src={src} muted loop playsinline disableremoteplayback data-lazy-video
+></video>
+
+<style>
+  .video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  function initLazyVideos() {
+    const videos = document.querySelectorAll<HTMLVideoElement>('video[data-lazy-video]');
+    if (videos.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    videos.forEach((video) => observer.observe(video));
+  }
+
+  document.addEventListener('astro:page-load', initLazyVideos);
+</script>

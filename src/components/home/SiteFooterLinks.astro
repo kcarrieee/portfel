@@ -1,0 +1,34 @@
+---
+import { links, homeContent, type Lang } from '../../data/home';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const footer = homeContent[lang].footer;
+---
+
+<div class="footer-links" id="contact" data-reveal-group>
+  <a href={links.email}>{footer.email}</a>
+  <a href={links.xacc} target="_blank" rel="noopener noreferrer">{footer.xacc}</a>
+  <a href={links.linkedin} target="_blank" rel="noopener noreferrer">{footer.linkedin}</a>
+  <a href={links.telegram} target="_blank" rel="noopener noreferrer">{footer.telegram}</a>
+  <a href={links.behance} target="_blank" rel="noopener noreferrer">{footer.behance}</a>
+</div>
+
+<style>
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+    font-size: 15px;
+    color: var(--color-text-muted-2);
+  }
+
+  .footer-links a {
+    color: inherit;
+    text-decoration: none;
+  }
+</style>
