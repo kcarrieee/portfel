@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import DetailLayout from '../../../components/detail/DetailLayout.astro';
+import LanguageSwitch from '../../../components/LanguageSwitch.astro';
 import { useTranslations } from '../../../i18n/utils';
 
 export async function getStaticPaths() {
@@ -17,12 +18,13 @@ const { Content, headings } = await render(project);
 const lang = 'ru';
 const t = useTranslations(lang);
 const slug = project.id.split('/')[1];
+const altHref = `/projects/${slug}`;
 const hasMeta = project.data.duration || project.data.platform || project.data.role;
 ---
 
 <DetailLayout
   lang={lang}
-  altHref={`/projects/${slug}`}
+  altHref={altHref}
   title={project.data.title}
   backHref="/ru/"
   backLabel={t('project.back')}
@@ -30,10 +32,18 @@ const hasMeta = project.data.duration || project.data.platform || project.data.r
   coverAlt={project.data.title}
   headings={headings}
 >
-  <header class="header" slot="header">
+  <header class="header appear" style="--appear-delay: 80ms" slot="header">
     <div class="title-row">
-      <h1 class="title">{project.data.title}</h1>
-      {project.data.year && <p class="year">{project.data.year}</p>}
+      <div class="title-group">
+        <h1 class="title">{project.data.title}</h1>
+        {project.data.year && <p class="year year-inline">{project.data.year}</p>}
+      </div>
+      <div class="title-row-right">
+        {project.data.year && <p class="year year-standalone">{project.data.year}</p>}
+        <div class="header-lang-switch">
+          <LanguageSwitch lang={lang} altHref={altHref} />
+        </div>
+      </div>
     </div>
     {
       hasMeta && (
@@ -75,6 +85,18 @@ const hasMeta = project.data.duration || project.data.platform || project.data.r
     gap: 16px;
   }
 
+  .title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .title-row-right {
+    display: flex;
+    align-items: center;
+  }
+
   .title {
     margin: 0;
     color: var(--color-text);
@@ -89,7 +111,35 @@ const hasMeta = project.data.duration || project.data.platform || project.data.r
     white-space: nowrap;
   }
 
- 
+  .year-inline {
+    display: none;
+  }
+
+  .header-lang-switch {
+    display: none;
+  }
+
+  /* Desktop: the language switch moves from the top nav (hidden there,
+     see DetailLayout) into the title row where the date used to sit, and
+     the date moves next to the title in small text instead. */
+  @media (min-width: 1280px) {
+    .title-row {
+      align-items: center;
+    }
+
+    .year-inline {
+      display: inline;
+    }
+
+    .year-standalone {
+      display: none;
+    }
+
+    .header-lang-switch {
+      display: inline-flex;
+    }
+  }
+
   .meta-row {
     display: flex;
     flex-wrap: wrap;

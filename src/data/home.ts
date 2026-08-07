@@ -11,20 +11,26 @@ export const links = {
 
 export const homeContent = {
   en: {
-    name: 'Karina Litvinova',
-    bioIntro: 'Now Product Designer at',
+    firstName: 'Karina',
+    bioGreeting: 'Hey! I am',
+    bioGreetingRest: 'a product designer with an eye for details',
+    bioRoleIntro: 'Now I design at',
     companyName: 'wildberries',
-    bioRest:
-      "I'm good at quickly diving into dense domains, turn complexity into clarity and come up with somethings cool.",
-    bioPrevious: 'Previously, I worked across fintech products. Check out',
-    resumeLabel: 'resume',
+    bioRoleRest:
+      "I'm good at quickly diving into dense domains, turn complexity into clarity and use storytelling to move ideas from concept to launch.",
+    bioCraft:
+      "I care about craft very much, especially animations end software development. Also I am a good team player, so always try to listen, support others, and find solutions that work for everyone around me. ",
+    bioPrevious: 'Previously, I worked at Bank Saint Petersburg and a few other companies. Check out my',
+    resumeLabel: 'resume / cv',
     and: 'and',
-    socialsLabel: 'socials',
+    socialsLabel: 'other socials',
     moreProjectsTitle: 'More projects',
     moreProjectsSubtitle: 'Freelance / commercial / side projects',
     leadershipHeading: 'More about design',
+    localTimePrefix: "It's",
+    localTimeSuffix: 'where I am',
     footer: {
-      email: 'My email',
+      email: 'Email',
       linkedin: 'LinkedIn',
       telegram: 'Telegram',
       behance: 'Behance',
@@ -32,18 +38,24 @@ export const homeContent = {
     },
   },
   ru: {
-    name: 'Карина Литвинова',
-    bioIntro: 'Продуктовый дизайнер в',
+    firstName: 'Карина',
+    bioGreeting: 'Привет! Я',
+    bioGreetingRest: 'продуктовый дизайнер, которому важны детали',
+    bioRoleIntro: 'Сейчас работаю в',
     companyName: 'wildberries',
-    bioRest:
-      'Мне нравится быстро анализировать сложные направления, раскладывать всё по полочкам и реализовывать крутые идей',
-    bioPrevious: 'Ранее работала в финтех компаниях. Вот моё ',
-    resumeLabel: 'резюме',
+    bioRoleRest:
+      'Быстро погружаюсь в сложные области, превращаю сложность в ясность и довожу идею от концепции до запуска.',
+    bioCraft:
+      'Мне очень важно качество мелочей — особенно анимации и техническая реализация продукта. А ещё я люблю работать в команде: стараюсь слушать других, поддерживать и находить решения, которые подходят всем. ',
+    bioPrevious: 'Ранее работала в Банке Санкт-Петербург и еще нескольких компаниях. Подробнее в моём',
+    resumeLabel: 'резюме / cv',
     and: 'и',
-    socialsLabel: 'соцсети',
+    socialsLabel: 'остальные соцсети',
     moreProjectsTitle: 'Другие проекты',
     moreProjectsSubtitle: 'Фриланс / коммерческие / сторонние проекты',
     leadershipHeading: 'Больше про дизайн',
+    localTimePrefix: 'Сейчас у меня',
+    localTimeSuffix: '',
     footer: {
       email: 'Почта',
       linkedin: 'LinkedIn',

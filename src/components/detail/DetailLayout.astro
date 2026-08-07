@@ -34,7 +34,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
 <Layout lang={lang} title={title}>
   {
     tocHeadings.length > 0 && (
-      <aside class="toc">
+      <aside class="toc appear" style="--appear-delay: 0ms">
         <a class="toc-back" href={backHref}>
           <img class="toc-back-arrow" src="/icons/icon-arrow.svg" alt="" width="16" height="16" />
           {t('toc.index')}
@@ -50,8 +50,8 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     )
   }
   <div class="page">
-    <nav class="nav">
-     
+    <nav class="nav appear" style="--appear-delay: 0ms">
+
       <a class="back" href={backHref}>
         <img class="back-arrow" src="/icons/icon-arrow.svg" alt="" width="16" height="16" />
         {backLabel}
@@ -60,7 +60,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     </nav>
     {
       cover && (
-        <div class="cover">
+        <div class="cover appear" style="--appear-delay: 40ms">
           <img src={cover} alt={coverAlt} />
         </div>
       )
@@ -73,6 +73,29 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
 </Layout>
 
 <script>
+  // Load-in cascade (see `.appear` in global.css). `.toc`, `.nav`, `.cover`,
+  // and the header are tagged with a fixed `--appear-delay` directly in the
+  // markup; the article body is arbitrary rendered markdown, so its direct
+  // children (h2, p, ul, img, video, ...) are tagged here instead, each a
+  // little later than the last. The delay growth is capped so a very long
+  // article doesn't push the tail elements out several seconds.
+  //
+  // Whether the cascade actually animates is decided in CSS by the
+  // `.no-appear` class Layout.astro sets on router-swapped renders, so
+  // there's nothing to check here — tagging is unconditional.
+  function initAppearCascade() {
+    const content = document.querySelector<HTMLElement>('.content');
+    if (!content) return;
+
+    Array.from(content.children).forEach((el, index) => {
+      const item = el as HTMLElement;
+      item.classList.add('appear');
+      item.style.setProperty('--appear-delay', `${Math.min(140 + index * 15, 500)}ms`);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initAppearCascade);
+
   function initToc() {
     const headingEls = document.querySelectorAll<HTMLElement>('.content h2[id]');
     const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
@@ -99,7 +122,29 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     setActive(headingEls[0].id);
   }
 
+  function initContentVideos() {
+    const videos = document.querySelectorAll<HTMLVideoElement>('.content video[data-lazy-video]');
+    if (videos.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    videos.forEach((video) => observer.observe(video));
+  }
+
   document.addEventListener('astro:page-load', initToc);
+  document.addEventListener('astro:page-load', initContentVideos);
 </script>
 
 <style>
@@ -113,7 +158,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
       flex-direction: column;
       gap: 24px;
       position: fixed;
-      top: 45px;
+      top: 90px;
       left: 40px;
       width: 200px;
     }
@@ -150,10 +195,10 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
   }
 
   .page {
-    max-width: 680px;
+    max-width: 600px;
     width: 100%;
     margin-inline: auto;
-    padding: 45px 24px 60px;
+    padding: 90px 24px 60px;
   }
 
   .nav {
@@ -161,6 +206,15 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     align-items: center;
     justify-content: space-between;
     margin-bottom: 32px;
+  }
+
+  /* On desktop the back link is hidden (below) and the language switch
+     moves into the title row instead, next to the project date — see
+     `.header-lang-switch` in the project page templates. */
+  @media (min-width: 1280px) {
+    .nav {
+      display: none;
+    }
   }
 
   .back {
@@ -273,7 +327,14 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
 
 .content :global(img) {
     width: 100%;
-    height: fit-content; 
+    height: fit-content;
+    border-radius: 8px;
+    margin-block: 20px;
+}
+
+.content :global(video) {
+    width: 100%;
+    height: fit-content;
     border-radius: 8px;
     margin-block: 20px;
 }
@@ -283,6 +344,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
       max-width: 100vw;
       width: 100vw;
       padding-inline: 20px;
+      padding-top: 60px;
     }
    
   }

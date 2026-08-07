@@ -3,13 +3,14 @@ interface Props {
   href: string;
   title: string;
   year: string;
+  delay?: number;
 }
 
-const { href, title, year } = Astro.props;
+const { href, title, year, delay = 0 } = Astro.props;
 ---
 
 
-<a class="project-card" href={href} data-reveal>
+<a class="project-card appear" href={href} style={`--appear-delay: ${delay}ms`}>
   <div class="visual">
     <slot />
   </div>
@@ -21,6 +22,7 @@ const { href, title, year } = Astro.props;
 
 <style>
   .project-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 570px;
@@ -38,6 +40,76 @@ const { href, title, year } = Astro.props;
     border: 1px solid #2f2f2f;
     overflow: hidden;
     background: var(--color-card-bg);
+  }
+
+  /* A conic-gradient sheen rotating behind a 1px ring mask — reads as
+     light sweeping around the card edge, "liquid glass" style. Registering
+     --shimmer-angle as an <angle> is what lets the browser interpolate it
+     smoothly frame to frame instead of just snapping between values. */
+  @property --shimmer-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  /* Lives on `.project-card`, not `.visual` — `overflow: hidden` on
+     `.visual` (needed to clip the cover image/video) clips at the padding
+     edge, so any ring drawn *on* `.visual` either sits under the image
+     (inset: 0, same box the media fills) or gets clipped away trying to
+     reach the border (inset: -1px, past the padding edge = clipped).
+     Sitting on the unclipped parent and matching `.visual`'s box via the
+     same width + aspect-ratio sidesteps both problems. */
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    aspect-ratio: 1 / 1;
+    z-index: 1;
+    border-radius: 10px;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--shimmer-angle),
+      transparent 0deg,
+      transparent 55deg,
+      rgba(255, 255, 255, 0.75) 90deg,
+      rgba(200, 220, 255, 0.3) 118deg,
+      transparent 155deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms ease;
+    animation: shimmer-spin 3.2s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .project-card:hover::before,
+  .project-card:focus-visible::before {
+    opacity: 1;
+    animation-play-state: running;
+  }
+
+  @keyframes shimmer-spin {
+    to {
+      --shimmer-angle: 360deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card::before {
+      transition-duration: 0.01ms;
+      animation: none;
+    }
   }
 
   .meta {

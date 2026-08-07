@@ -3,13 +3,14 @@ import { links, homeContent, type Lang } from '../../data/home';
 
 interface Props {
   lang: Lang;
+  delay?: number;
 }
 
-const { lang } = Astro.props;
+const { lang, delay = 0 } = Astro.props;
 const footer = homeContent[lang].footer;
 ---
 
-<div class="footer-links" id="contact" data-reveal-group>
+<div class="footer-links appear" id="contact" style={`--appear-delay: ${delay}ms`}>
   <a href={links.email}>{footer.email}</a>
   <a href={links.xacc} target="_blank" rel="noopener noreferrer">{footer.xacc}</a>
   <a href={links.linkedin} target="_blank" rel="noopener noreferrer">{footer.linkedin}</a>

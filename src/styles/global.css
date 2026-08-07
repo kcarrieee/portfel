@@ -10,7 +10,7 @@
   --color-text-muted-4: #4c4c4c;
   --color-text-muted-5: #616161;
   --color-border: #2f2f2f;
-  --color-link-underline: #6e6e73;
+  --color-link-underline: #48484c;
   --color-block-heading: #ffffff;
   --color-block-text: #989898;
 
@@ -50,5 +50,100 @@ a {
 img {
   display: block;
   max-width: 100%;
+}
+
+/* Load-in cascade: each `.appear` element fades/blurs/slides in on its own
+   schedule, set per-element via `--appear-delay`. `animation-fill-mode:
+   backwards` is what keeps it invisible during that delay instead of
+   flashing visible before its turn. Pure CSS — no JS animation loop, no
+   scroll observer, no library. */
+@keyframes appear-content {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: translateY(0);
+  }
+}
+
+.appear {
+  animation: appear-content 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--appear-delay, 0s);
+}
+
+/* Set on <html> by Layout.astro the moment a client-side navigation swaps
+   the page in, so the intro plays on a real document load — first visit or
+   the user hitting reload — but never again on internal navigation such as
+   switching language. Deliberately keyed off "did the router swap this
+   page in", not "has it played before this session": sessionStorage would
+   survive a reload and wrongly suppress the intro there. */
+.no-appear .appear {
+  animation: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appear {
+    animation: none;
+  }
+}
+
+/* Page transitions (Astro's <ClientRouter />, backed by the native View
+   Transitions API) — a plain, quick cross-fade. Blur+scale looked nice in
+   isolation but reads as "strange" here: EN and RU copy render at
+   different page heights, and the browser also animates
+   ::view-transition-group(root)'s own size between the old and new
+   snapshot — stacking that resize on top of a scaling, blurring crossfade
+   made the height difference read as a visible warp/jump instead of a
+   clean transition. A same-duration, opacity-only fade doesn't call
+   attention to the size change, which is what actually reads as smooth.
+   Applies to every internal navigation, so switching language feels like
+   one continuous page rather than a hard reload. */
+::view-transition-group(root) {
+  animation-duration: 220ms;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease-out;
+  /* Override the UA default of `plus-lighter`, which mixes the fading-out
+     and fading-in snapshots additively — fine on a white background, but
+     it washes out visibly on this site's dark background. */
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation-name: vt-fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: vt-fade-in;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
 }
 

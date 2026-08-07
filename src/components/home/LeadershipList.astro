@@ -1,17 +1,23 @@
 ---
 interface Props {
   heading: string;
-  items: { title: string; year: string; href: string }[];
+  items: { title: string; year: string; href: string; external?: boolean }[];
+  delay?: number;
 }
 
-const { heading, items } = Astro.props;
+const { heading, items, delay = 0 } = Astro.props;
 ---
 
-<div class="leadership" data-reveal>
+<div class="leadership appear" style={`--appear-delay: ${delay}ms`}>
   <p class="heading">{heading}</p>
   {
     items.map((item) => (
-      <a class="item" href={item.href}>
+      <a
+        class="item"
+        href={item.href}
+        target={item.external ? '_blank' : undefined}
+        rel={item.external ? 'noopener noreferrer' : undefined}
+      >
         <div class="text">
           <p class="year">{item.year}</p>
           <p class="title">{item.title}</p>

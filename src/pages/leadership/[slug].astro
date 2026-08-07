@@ -29,7 +29,7 @@ const slug = item.id.split('/')[1];
   coverAlt={item.data.title}
   headings={headings}
 >
-  <header class="header" slot="header">
+  <header class="header appear" style="--appear-delay: 80ms" slot="header">
     <div class="title-row">
       <h1 class="title">{item.data.title}</h1>
       {item.data.year && <p class="year">{item.data.year}</p>}

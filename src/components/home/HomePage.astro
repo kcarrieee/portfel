@@ -22,15 +22,34 @@ const projects = (await getCollection('projects', (entry) => entry.id.startsWith
   (a, b) => a.data.order - b.data.order,
 );
 
-const leadershipItems = (
-  await getCollection('leadership', (entry) => entry.id.startsWith(`${lang}/`))
-)
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((entry) => ({
+const externalLeadershipItem = {
+  title: 'Design Inspo Gallery',
+  year: 'Curated',
+  href: 'https://pin.it/68Uvps3FB',
+  external: true,
+  order: 2,
+};
+
+const leadershipItems = [
+  ...(await getCollection('leadership', (entry) => entry.id.startsWith(`${lang}/`))).map((entry) => ({
     title: entry.data.title,
     year: entry.data.year ?? '',
     href: `${leadershipBasePath}/${entry.id.split('/')[1]}`,
-  }));
+    external: false,
+    order: entry.data.order,
+  })),
+  externalLeadershipItem,
+]
+  .sort((a, b) => a.order - b.order)
+  .map(({ order, ...item }) => item);
+
+// Continues the hero's cascade (0-160ms) — one project card at a time,
+// then the leadership block, then the footer, matching shedsgns.me's
+// load-in pacing.
+const projectsListDelay = 230;
+const leadershipDelay = projectsListDelay + projects.length * 12 + 40;
+const footerDelay = leadershipDelay + 40;
+const timeDelay = footerDelay + 20;
 ---
 
 <div class="page">
@@ -40,8 +59,19 @@ const leadershipItems = (
       <div class="wrapper">
         <ProjectsList projects={projects} basePath={basePath} />
       </div>
-      <LeadershipList heading={content.leadershipHeading} items={leadershipItems} />
-      <SiteFooterLinks lang={lang} />
+      <LeadershipList heading={content.leadershipHeading} items={leadershipItems} delay={leadershipDelay} />
+      <div class="foot_warpper">
+      <SiteFooterLinks lang={lang} delay={footerDelay} />
+      <p
+        class="timeme_warpper appear"
+        style={`--appear-delay: ${timeDelay}ms`}
+        data-local-time
+        data-timezone="Europe/Istanbul"
+        data-locale={lang === 'en' ? 'en-US' : 'ru-RU'}
+      >
+        {content.localTimePrefix} <span data-local-time-value>&mdash;:&mdash;</span> {content.localTimeSuffix}
+      </p>
+    </div>
     </div>
   </div>
 </div>
@@ -56,36 +86,55 @@ const leadershipItems = (
 
   .content {
     display: flex;
-    gap: 86px;
+    flex-direction: column;
+    gap: 72px;
     align-items: flex-start;
-    max-width: 994px;
+    max-width: 600px;
     width: 100%;
-    padding: 45px 24px 60px;
+    padding: 90px 24px 60px;
   }
 
   .work {
     display: flex;
     flex-direction: column;
     gap: 70px;
-    flex: 1;
+    width: 100%;
     min-width: 0;
   }
 
   .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    margin-top: 36px;
     width: 100%;
   }
+  .foot_warpper {
+    display: flex;
+    flex-direction: column;
+    gap:8px;
+  }
+  .foot_warpper p{
+    color:#777777;
+  }
 
-  @media (max-width: 994px) {
-    .content {
-      flex-direction: column;
-      gap: 32px;
+  .timeme_warpper [data-local-time-value] {
+    display: inline-block;
+    animation: time-pulse 1.9s ease-in-out infinite;
+  }
+
+  @keyframes time-pulse {
+    0%,
+    100% {
+      opacity: 1;
     }
+    50% {
+      opacity: 0.2;
+    }
+  }
 
-    .work {
-      width: 100%;
+  @media (prefers-reduced-motion: reduce) {
+    .timeme_warpper [data-local-time-value] {
+      animation: none;
     }
   }
 
@@ -93,97 +142,44 @@ const leadershipItems = (
     .content {
       width: 100vw;
       max-width: 100vw;
+      gap: 48px;
       padding-inline: 20px;
+      padding-top: 60px;
     }
   }
 </style>
 
 <script>
-  import { animate, stagger } from 'framer-motion/dom';
+  // Shows the live time in the timezone set via `data-timezone` (module
+  // scope persists across Astro's client-side navigations, so the previous
+  // interval is cleared each time rather than left running against a
+  // detached element).
+  let clockIntervalId: ReturnType<typeof setInterval> | undefined;
 
-  // Module scope persists across Astro's client-side navigations (e.g.
-  // switching language), so this flag survives until a real page reload —
-  // that's what keeps the reveal from re-triggering on internal navigation.
-  let hasInitialized = false;
+  function updateLocalTime() {
+    document.querySelectorAll<HTMLElement>('[data-local-time]').forEach((el) => {
+      const timeZone = el.dataset.timezone;
+      const locale = el.dataset.locale ?? 'en-US';
+      const valueEl = el.querySelector<HTMLElement>('[data-local-time-value]');
+      if (!timeZone || !valueEl) return;
 
-  const revealTransition = { duration: 1.9, ease: [0.16, 1, 0.3, 1] as const };
-
-  function hide(el: HTMLElement) {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-  }
-
-  function reveal(target: HTMLElement | HTMLElement[], delay?: ReturnType<typeof stagger>) {
-    const els = Array.isArray(target) ? target : [target];
-    const controls = animate(
-      els,
-      { opacity: [0, 1], y: [24, 0] },
-      delay ? { ...revealTransition, delay } : revealTransition,
-    );
-
-    // WAAPI-accelerated animations hold their end value without writing it
-    // into the `style` attribute. Commit the end state as real inline
-    // styles once each animation finishes so it survives any later
-    // snapshotting (e.g. Astro's back/forward cache).
-    controls.finished
-      .then(() => {
-        els.forEach((el) => {
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-        });
-      })
-      .catch(() => {});
-  }
-
-  function initReveal() {
-    if (hasInitialized) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const items = document.querySelectorAll<HTMLElement>('.page [data-reveal]');
-    const groups = document.querySelectorAll<HTMLElement>('.page [data-reveal-group]');
-    if (!items.length && !groups.length) return;
-
-    hasInitialized = true;
-
-    const observerOptions: IntersectionObserverInit = {
-      rootMargin: '0px 0px -10% 0px',
-      threshold: 0.15,
-    };
-
-    // Individual sections (sidebar, each project card, the leadership
-    // block): reveal the element itself the first time it scrolls into
-    // view. Elements already on-screen at load fire immediately, which is
-    // what gives the sidebar its old "intro" feel for free.
-    const itemObserver = new IntersectionObserver((entries, obs) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        obs.unobserve(entry.target);
-        reveal(entry.target as HTMLElement);
-      }
-    }, observerOptions);
-
-    items.forEach((el) => {
-      hide(el);
-      itemObserver.observe(el);
-    });
-
-    // Groups (footer links): reveal the container's children one by one
-    // with a stagger once the container scrolls into view.
-    const groupObserver = new IntersectionObserver((entries, obs) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        obs.unobserve(entry.target);
-        const children = Array.from(entry.target.children) as HTMLElement[];
-        reveal(children, stagger(0.08));
-      }
-    }, observerOptions);
-
-    groups.forEach((el) => {
-      const children = Array.from(el.children) as HTMLElement[];
-      children.forEach(hide);
-      groupObserver.observe(el);
+      const formatted = new Date().toLocaleTimeString(locale, {
+        timeZone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: locale.startsWith('en'),
+      });
+      valueEl.textContent = formatted.toLowerCase();
     });
   }
 
-  document.addEventListener('astro:page-load', initReveal);
+  function initLocalTime() {
+    if (clockIntervalId !== undefined) clearInterval(clockIntervalId);
+    if (!document.querySelector('[data-local-time]')) return;
+
+    updateLocalTime();
+    clockIntervalId = setInterval(updateLocalTime, 30_000);
+  }
+
+  document.addEventListener('astro:page-load', initLocalTime);
 </script>

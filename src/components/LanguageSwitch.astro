@@ -3,19 +3,15 @@ import { languages, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
-  /** Path to the equivalent page in the other language */
   altHref: string;
 }
 
 const { lang, altHref } = Astro.props;
 const tabOrder = Object.keys(languages) as Lang[];
-const tabLabel: Record<Lang, string> = { en: 'ENG', ru: 'RU' };
+const tabLabel: Record<Lang, string> = { en: 'eng', ru: 'ru' };
 const otherLang = tabOrder.find((candidate) => candidate !== lang)!;
-// unchecked = first language (en), checked = second language (ru)
 const isChecked = lang === tabOrder[1];
 
-// Labelled in the *target* language, so it's understandable regardless of
-// which language the page is currently in.
 const switchAriaLabel: Record<Lang, string> = {
   en: 'Switch language to English',
   ru: 'Переключить язык на русский',
@@ -42,13 +38,6 @@ const switchAriaLabel: Record<Lang, string> = {
       ))
     }
   </div>
-  <!--
-    Real navigation goes through this actual link, not a manual navigate()
-    call — Astro's ClientRouter already intercepts real <a> clicks
-    site-wide (identical, already-proven code path for every other link on
-    the site). The checkbox exists for semantics/haptics and forwards a
-    programmatic click here on change, rather than reimplementing routing.
-  -->
   <a
     class="switch-nav-link"
     href={altHref}
@@ -68,19 +57,22 @@ const switchAriaLabel: Record<Lang, string> = {
 
 <script>
   import { triggerHaptic } from '../utils/haptics';
+  import { playClickSound } from '../utils/sound';
 
   function initLanguageSwitch() {
     document.querySelectorAll<HTMLElement>('[data-lang-switch]').forEach((wrapper) => {
       const input = wrapper.querySelector<HTMLInputElement>('[data-lang-switch-input]');
       const link = wrapper.querySelector<HTMLAnchorElement>('[data-lang-switch-link]');
       if (!input || !link) return;
-
-      // `change` only fires on a genuine value flip caused by user
-      // interaction (click/tap/keyboard) — never on initial render or when
-      // we programmatically set `.checked`, so this naturally satisfies
-      // "only when the language actually changes, and never on sync."
       input.addEventListener('change', () => {
         triggerHaptic();
+        playClickSound();
+        // The language switch swaps to a different URL (/ vs /ru/), which
+        // the browser treats as a real navigation and scrolls to the top —
+        // jarring here since it's the same content, just relabelled. Stash
+        // the scroll position for `astro:after-swap` (see Layout.astro) to
+        // restore before the new page paints.
+        sessionStorage.setItem('lang-switch-scroll-y', String(window.scrollY));
         link.click();
       });
     });
@@ -101,8 +93,8 @@ const switchAriaLabel: Record<Lang, string> = {
     z-index: 2;
     width: 100%;
     height: 100%;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 30px;
+    min-height: 30px;
     margin: 0;
     appearance: none;
     background: none;
@@ -127,21 +119,24 @@ const switchAriaLabel: Record<Lang, string> = {
   .switch-visual {
     position: relative;
     display: flex;
-    padding: 2px;
-    border: 1px solid #282828c0;
+    /* padding: 3px; */
+    /* background: #111111;
+    border: 1px solid #1d1d1d;
     border-radius: 10px;
-    transition: transform 150ms ease;
+    box-shadow: inset -3px 1px 7px -1px rgba(0, 0, 0, 0.25); */
+    transition: transform 160ms ease;
   }
 
   .switch-thumb {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 44px;
-    height: calc(100% - 4px);
-    background: var(--color-card-bg);
-    border: 1px solid var(--color-border);
+    top: 4px;
+    left: 4px;
+    width: 30px;
+    height: calc(100% - 8px);
+    /* background: rgba(233, 233, 233, 0.85); */
+    /* border: 1px solid #2e2e2e; */
     border-radius: 8px;
+    box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.1);
     transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
   }
@@ -165,16 +160,16 @@ const switchAriaLabel: Record<Lang, string> = {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
+    width: 30px;
     height: 30px;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--color-text-muted-5);
+    font-size: 13px;
+    line-height: 16px;
+    color: #474747;
     transition: color 200ms ease;
   }
 
   .switch-label.is-active {
-    color: var(--color-text);
+    color: #c3c3c3;
   }
 
   .switch-noscript-link {
@@ -189,5 +184,10 @@ const switchAriaLabel: Record<Lang, string> = {
     .switch-label {
       transition-duration: 0.01ms;
     }
+  }
+
+  @media (max-width: 549px) {
+    .switch-visual {
+    padding: 6px;
   }
 </style>

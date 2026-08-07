@@ -1,10 +1,9 @@
 ---
 title: "Bank Saint Petersburg. Transparent cash back"
 summary: "Placeholder summary — replace with the real case study write-up."
-year: "2025-2026"
+year: "2023-2025"
 order: 2
 role: "Redesign"
-duration: "3 weeks"
 ---
 
 

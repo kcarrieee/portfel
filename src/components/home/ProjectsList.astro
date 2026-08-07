@@ -5,12 +5,14 @@ import CoverVisual from './visuals/CoverVisual.astro';
 import VideoVisual from './visuals/VideoVisual.astro';
 
 import bspbImage from '../../assets/projects/project_image_bsp.png';
-import puzzleImage from '../../assets/projects/image_puzzle.png';
-import wbImage from '../../assets/projects/image.png';
+import wbImage from '../../assets/projects/wb_chat_333.png';
 import tulipImage from '../../assets/projects/tulip_br.png';
-import chanityImage from '../../assets/projects/chanity.png';
-import expiVideo from '../../assets/projects/expi_video_final.mp4';
+import chanityImage from '../../assets/projects/chanity_minimal.png';
+import voyagerImage from '../../assets/projects/v_video.mp4';
+import salesImage from '../../assets/projects/sales_kit_1.png';
+import expiVideo from '../../assets/projects/Screen_studio.mp4';
 import alfaBankVideo from '../../assets/projects/alfa_bank.mp4';
+import designSystemVideo from '../../assets/projects/design_system.mp4';
 
 
 interface Props {
@@ -21,25 +23,33 @@ interface Props {
 const { projects, basePath } = Astro.props;
 ---
 
-<div class="projects">
-  {
-    projects.map((project) => {
-      const slug = project.id.split('/')[1];
-      const href = `${basePath}/${slug}`;
-      return (
-        <ProjectCardLink href={href} title={project.data.title} year={project.data.year ?? ''}>
-          {slug === 'bank-spb' && <CoverVisual image={bspbImage} alt={project.data.title} />}
-          {slug === 'ai-concierge' && <VideoVisual src={expiVideo} />}
-          {slug === 'wb-chat' && <CoverVisual image={wbImage} alt={project.data.title} />}
-          {slug === 'puzzle-dom' && <CoverVisual image={puzzleImage} alt={project.data.title} />}
-          {slug === 'alpha-bank' && <VideoVisual src={alfaBankVideo} />}
-          {slug === 'project-brand' && <CoverVisual image={tulipImage} alt={project.data.title} />}
-          {slug === 'chanity-brand' && <CoverVisual image={chanityImage} alt={project.data.title} />}
-        </ProjectCardLink>
-      );
-    })
-  }
-</div>
+  <div class="projects">
+    {
+      projects.map((project, index) => {
+        const slug = project.id.split('/')[1];
+        const href = `${basePath}/${slug}`;
+        return (
+          <ProjectCardLink
+            href={href}
+            title={project.data.title}
+            year={project.data.year ?? ''}
+            delay={230 + index * 12}
+          >
+            {slug === 'bank-spb' && <CoverVisual image={bspbImage} alt={project.data.title} />}
+            {slug === 'ai-concierge' && <VideoVisual src={expiVideo} />}
+            {slug === 'wb-chat' && <CoverVisual image={wbImage} alt={project.data.title} />}
+            {slug === 'last-project' && <VideoVisual src={designSystemVideo} />}
+            {slug === 'alpha-bank' && <VideoVisual src={alfaBankVideo} />}
+            {slug === 'project-brand' && <CoverVisual image={tulipImage} alt={project.data.title} />}
+            {slug === 'voyager' && <VideoVisual src={voyagerImage} />}
+            {slug === 'saleskit' && <CoverVisual image={salesImage} alt={project.data.title} />}
+            {slug === 'chanity-brand' && <CoverVisual image={chanityImage} alt={project.data.title} />}
+          </ProjectCardLink>
+          
+        );
+      })
+    }
+  </div>
 
 <style>
   .projects {
@@ -47,5 +57,10 @@ const { projects, basePath } = Astro.props;
     flex-direction: column;
     gap: 60px;
     width: 100%;
+  }
+  .selected {
+    font-size: 12px;
+    color: #A0A0A0;
+    margin-bottom: 16px;
   }
 </style>

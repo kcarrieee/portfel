@@ -21,5 +21,51 @@ const { lang, title } = Astro.props;
   </head>
   <body>
     <slot />
+
+    <script>
+      import { playClickSound } from '../utils/sound';
+
+      // Click-sound targets, deliberately narrow: the hero's own links, the
+      // footer's social links, and the "Karina" name trigger. Everything
+      // else (project cards, the table of contents, links inside article
+      // copy) stays silent — the sound is an accent on a few deliberate
+      // interactions, not general link feedback.
+      const SOUND_TARGETS = '.hero a, .footer-links a, .name-trigger';
+
+      // The language switch lives inside the hero, so its own links would
+      // otherwise be caught by `.hero a`. It already plays the sound itself
+      // from its `change` handler, and its `<a>` — though `pointer-events:
+      // none` for real pointers — still receives the programmatic
+      // `link.click()` the switch fires, which would double-trigger it.
+      const EXCLUDED = '.switch-nav-link, .switch-noscript-link';
+
+      function initLinkSounds() {
+        document.querySelectorAll<HTMLElement>(SOUND_TARGETS).forEach((el) => {
+          if (el.closest(EXCLUDED)) return;
+          el.addEventListener('mouseenter', () => playClickSound());
+          el.addEventListener('click', () => playClickSound());
+        });
+      }
+
+      document.addEventListener('astro:page-load', initLinkSounds);
+
+      document.addEventListener('astro:after-swap', () => {
+        // Mark this render as router-swapped rather than freshly loaded, so
+        // the `.appear` intro cascade sits out internal navigation (see
+        // `.no-appear` in global.css). Runs before paint, so the skip
+        // applies without the content ever flashing in mid-animation.
+        // Re-applied on every swap because the swap copies the incoming
+        // document's <html> attributes over this element's.
+        document.documentElement.classList.add('no-appear');
+
+        // Restore scroll position after a language switch (see
+        // LanguageSwitch.astro, which stashes it before navigating). Also
+        // before paint, so the user never sees the top-of-page flash.
+        const savedY = sessionStorage.getItem('lang-switch-scroll-y');
+        if (savedY === null) return;
+        sessionStorage.removeItem('lang-switch-scroll-y');
+        window.scrollTo({ top: Number(savedY), left: 0, behavior: 'instant' });
+      });
+    </script>
   </body>
 </html>

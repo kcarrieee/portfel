@@ -1,7 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import LanguageSwitch from '../LanguageSwitch.astro';
 import { links, homeContent, type Lang } from '../../data/home';
-
+import karinaPhoto from '../../assets/projects/karina-photo.png';
 
 interface Props {
   lang: Lang;
@@ -12,114 +13,215 @@ const { lang, altHref } = Astro.props;
 const content = homeContent[lang];
 ---
 
-<div class="sidebar" data-reveal>
-  <div class="switch-row">
+<div class="hero">
+  <div class="photo-backdrop" aria-hidden="true"></div>
+  <div class="top-row appear" style="--appear-delay: 0ms">
+    <div class="logo_text">good evening,
+      こんばんは</div>
+    <!-- <div class="logo" aria-hidden="true"></div> -->
     <LanguageSwitch lang={lang} altHref={altHref} />
   </div>
 
-  <div class="profile">
-    <div class="photo" aria-hidden="true" transition:persist="profile-photo">
-    </div>
-
-    <div class="text">
-      <p class="name">{content.name}</p>
-      <p class="bio">
-        {content.bioIntro}{' '}
-        <a class="link" href={links.wildberries} target="_blank" rel="noopener noreferrer"
-          >{content.companyName}</a
-        >. {content.bioRest}
-      </p>
-    </div>
-
-    <p class="bio-links">
+  <div class="bio">
+    <p class="paragraph appear" style="--appear-delay: 40ms">
+      {content.bioGreeting}{' '}
+      <span class="name-trigger" data-photo-trigger tabindex="0" role="button" aria-expanded="false" aria-label={content.firstName}>
+        <span class="avatar" aria-hidden="true"></span>{' '}<span class="highlight">{content.firstName}</span>
+        <span class="photo-popup" data-photo-popup>
+          <Image src={karinaPhoto} alt={content.firstName} width={220} densities={[1, 2]} />
+        </span>
+      </span>{' '}{content.bioGreetingRest}
+    </p>
+    <p class="paragraph appear" style="--appear-delay: 80ms">
+      {content.bioRoleIntro}{' '}
+      <a class="link" href={links.wildberries} target="_blank" rel="noopener noreferrer"
+        >{content.companyName}</a
+      >. {content.bioRoleRest}
+    </p>
+    <p class="paragraph appear" style="--appear-delay: 120ms">{content.bioCraft}</p>
+    <p class="previous appear" style="--appear-delay: 160ms">
       {content.bioPrevious}{' '}
       <a class="icon-link" href={links.resume}>
-        <img src="/icons/icon-resume.svg" alt="" width="16" height="16" />{content.resumeLabel}
+        <!-- <img src="/icons/icon-resume.svg" alt="" width="16" height="16" /> -->
+        {content.resumeLabel}
       </a>{' '}
       {content.and}{' '}
       <a class="icon-link" href="#contact">
-        <img src="/icons/icon-mail.svg" alt="" width="16" height="16" />{content.socialsLabel}
+        <!-- <img src="/icons/icon-mail.svg" alt="" width="16" height="16" /> -->
+        {content.socialsLabel}
       </a>
     </p>
   </div>
+ 
 </div>
 
 <style>
-  .sidebar {
+  .hero {
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    align-items: flex-start;
-    justify-content: center;
-    position: sticky;
-    top: 45px;
-    width: 290px;
-    flex-shrink: 0;
-  }
-
-  .switch-row {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    position: absolute;
-    top:0;
-    left:0;
-  }
-
-  @media (max-width: 994px) {
-    .sidebar {
-      position: static;
-      width: 100%;
-    }
-  }
-
-  .profile {
-    display: flex;
-    padding-top: 28px;
-    flex-direction: column;
-    gap: 16px;
+    gap: 24px;
     align-items: flex-start;
     width: 100%;
   }
 
-  .photo {
-    width: 168px;
-    height: 168px;
-    border-radius: 16px;
-    margin-bottom: 12px;
-    background: url("../../assets/projects/me2.png") center / cover no-repeat;
-  }
-
-  .text {
+  .top-row {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
   }
 
-  .name {
-    margin: 0;
-    color: var(--color-text-muted-1);
-    font-size: 13px;
-    line-height: 16px;
+  .logo {
+    width: 60px;
+    height: 44px;
+    background: url('../../assets/projects/logo.png') center / contain no-repeat;
+    scale: 1.2;
+  }
+  .logo_text {
+    color: #5f5f5f;
   }
 
   .bio {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .paragraph {
     margin: 0;
-    color: var(--color-text);
+    color: var(--color-text-muted-1);
     font-size: 14px;
     line-height: 22px;
   }
+ 
 
-  .link {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: var(--color-link-underline);
+  .name-trigger {
+    position: relative;
+    z-index: 16;
+    display: inline-flex;
+    gap: 6px;
+    padding-left: 6px;
+    align-items:baseline;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .bio-links {
+ 
+  .photo-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    pointer-events: none;
+    /* Deliberately `none`, not `blur(0px)` — some CSS minifiers collapse a
+       zero-argument blur() into an invalid empty `blur()`, which silently
+       drops the whole declaration. `none` interpolates to/from `blur()`
+       just as smoothly and isn't at risk of that. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition:
+      backdrop-filter 400ms ease,
+      -webkit-backdrop-filter 400ms ease;
+  }
+
+  :global(body:has(.name-trigger:hover)) .photo-backdrop,
+  :global(body:has(.name-trigger:focus-visible)) .photo-backdrop,
+  :global(body:has(.name-trigger.is-open)) .photo-backdrop {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo-backdrop {
+      transition-duration: 0.01ms;
+    }
+  }
+
+
+  .name-trigger:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .avatar {
+    display: inline-block;
+    width: 24px;
+    height: 23px;
+    border-radius: 4px;
+    background: url('../../assets/projects/karina-photo.png') center / cover no-repeat;
+    vertical-align: middle;
+    position: relative;
+    top: 5px;
+  }
+
+  .highlight {
+    color: #dddddd;
+  }
+
+  .photo-popup {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    z-index: 20;
+    width: 240px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 8px) scale(0.96);
+    transform-origin: bottom center;
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+
+
+  .name-trigger.popup-below .photo-popup {
+    bottom: auto;
+    top: calc(100% + 12px);
+    transform: translate(-50%, -8px) scale(0.96);
+    transform-origin: top center;
+  }
+
+  .photo-popup :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .name-trigger:hover .photo-popup,
+  .name-trigger:focus-visible .photo-popup,
+  .name-trigger.is-open .photo-popup {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  @media (max-width: 549px) {
+    .photo-popup {
+      width: 200px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo-popup {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  .link {
+    color: #d3d3d3;
+    text-decoration: none;
+    border-bottom: 1px solid #5d5d5d;
+    padding-bottom: 0.5px;
+  }
+
+  .previous {
     margin: 0;
-    color: var(--color-text);
+    width: 100%;
+    color: var(--color-text-muted-1);
     font-size: 14px;
     line-height: 22px;
   }
@@ -128,18 +230,143 @@ const content = homeContent[lang];
     display: inline-flex;
     align-items: flex-end;
     gap: 2px;
-    color: var(--color-text);
-    text-decoration: underline;
-    text-decoration-color: var(--color-link-underline);
-    padding-inline:2px;
+    color: #dddddd;
+    text-decoration: none;
+    padding-inline: 1px;
     position: relative;
-    top: 3px;
+    top: 0;
   }
-.icon-link img {
-  display: inline-block;
-  align-self: center;
-  position: relative;
-  top: 0px;
-}
-  
+  .icon-link::after {
+    content: '';
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    bottom: 1px;
+    border-bottom: 1px solid #5f5f5f;
+  }
+
+  .icon-link img {
+    display: inline-block;
+    align-self: center;
+    position: relative;
+    top: 0px;
+  }
+
+  .projects_sidebar {
+    margin-top: 24;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .projects_divider {
+    width: 100%;
+    height: 0.8px;
+    background: #2a2a2a;
+  }
+
+  .projects_heading {
+    margin: 20px 0 16px;
+    color: var(--color-text-muted-2);
+    font-size: 14px;
+  }
+
+  .projects_list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .projects_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .projects_title {
+    color: #dddddd;
+    font-size: 16px;
+    border-bottom: 1px solid #717171;
+    padding-bottom: 0.5px;
+  }
+
+  .projects_date {
+    color: var(--color-text-muted-3);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .top-row{
+      padding-bottom: 8px;
+    }
+
+  @media (max-width: 549px) {
+    .paragraph {
+    margin: 0;
+    color: var(--color-text-muted-1);
+    font-size: 15px;
+    line-height: 24px;
+    }
+    .previous {
+      font-size: 15px;
+      line-height: 24px;
+    }
+    .top-row{
+      padding-bottom: 20px;
+    }
+  }
 </style>
+
+<script>
+
+  let listenersAttached = false;
+
+  function closeAllPopups() {
+    document.querySelectorAll<HTMLElement>('[data-photo-trigger].is-open').forEach((trigger) => {
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+
+  const PHOTO_ASPECT_RATIO = 578 / 608;
+
+  function updatePlacement(trigger: HTMLElement) {
+    const popup = trigger.querySelector<HTMLElement>('[data-photo-popup]');
+    if (!popup) return;
+    const estimatedHeight = popup.getBoundingClientRect().width * PHOTO_ASPECT_RATIO;
+    const spaceAbove = trigger.getBoundingClientRect().top;
+    trigger.classList.toggle('popup-below', spaceAbove < estimatedHeight + 12);
+  }
+
+  function initPhotoPopup() {
+    document.querySelectorAll<HTMLElement>('[data-photo-trigger]').forEach((trigger) => {
+      trigger.addEventListener('mouseenter', () => updatePlacement(trigger));
+      trigger.addEventListener('focus', () => updatePlacement(trigger));
+
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const willOpen = !trigger.classList.contains('is-open');
+        closeAllPopups();
+        if (willOpen) {
+          updatePlacement(trigger);
+          trigger.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    if (!listenersAttached) {
+      listenersAttached = true;
+      document.addEventListener('click', closeAllPopups);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeAllPopups();
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', initPhotoPopup);
+</script>
