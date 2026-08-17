@@ -100,9 +100,18 @@ export function playClickSound(): void {
   const ctx = getContext();
   if (!ctx || !gain || !buffer) return;
 
-  // A hover can be the first thing that happens after the context was
-  // suspended (e.g. the tab was backgrounded), so nudge it here too.
-  if (ctx.state === 'suspended') void ctx.resume().catch(() => {});
+  // Only ever play into a running context. Starting a source on a suspended
+  // one does not fail — it *queues* the sound against a clock that isn't
+  // moving, so every hover made before the first click piles up and then
+  // fires together the moment the context resumes. That backlog is what
+  // produced the doubled sound on the first click (the queued hovers plus
+  // the click's own sound) and the late, out-of-sync playback. Dropping the
+  // trigger instead costs at most the very first sound of the session,
+  // which the browser was never going to let through anyway.
+  if (ctx.state !== 'running') {
+    void ctx.resume().catch(() => {});
+    return;
+  }
 
   // Restart rather than layer: sweeping the pointer across several links in
   // quick succession should retrigger one click, not stack overlapping ones.

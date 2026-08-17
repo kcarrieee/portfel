@@ -1,7 +1,10 @@
 
 export const links = {
   wildberries: 'https://wildberries.ru',
-  resume: '#',
+  resume: {
+    en: '/Resume.pdf',
+    ru: '/Резюме.pdf',
+  },
   email: 'carriestylesf4@gmail.com',
   linkedin: 'https://www.linkedin.com/in/karina-litvinova-018b89386/',
   telegram: 'https://t.me/kcarriek',
@@ -15,11 +18,11 @@ export const homeContent = {
     bioGreeting: 'Hey! I am',
     bioGreetingRest: 'a product designer with an eye for details',
     bioRoleIntro: 'Now I design at',
-    companyName: 'wildberries',
+    companyName: 'Wildberries',
     bioRoleRest:
-      "I'm good at quickly diving into dense domains, turn complexity into clarity and use storytelling to move ideas from concept to launch.",
+      "I'm good at quickly diving into complex domains, turning complexity into clarity, and using storytelling to move ideas from concept to launch.",
     bioCraft:
-      "I care about craft very much, especially animations end software development. Also I am a good team player, so always try to listen, support others, and find solutions that work for everyone around me. ",
+      "I care deeply about craft, especially animation and software development. I’m also a strong team player: I listen, support others, and look for solutions that work for everyone.",
     bioPrevious: 'Previously, I worked at Bank Saint Petersburg and a few other companies. Check out my',
     resumeLabel: 'resume / cv',
     and: 'and',
@@ -40,14 +43,14 @@ export const homeContent = {
   ru: {
     firstName: 'Карина',
     bioGreeting: 'Привет! Я',
-    bioGreetingRest: 'продуктовый дизайнер, которому важны детали',
+    bioGreetingRest: 'дизайнер, которому важны детали',
     bioRoleIntro: 'Сейчас работаю в',
-    companyName: 'wildberries',
+    companyName: 'Wildberries',
     bioRoleRest:
       'Быстро погружаюсь в сложные области, превращаю сложность в ясность и довожу идею от концепции до запуска.',
     bioCraft:
-      'Мне очень важно качество мелочей — особенно анимации и техническая реализация продукта. А ещё я люблю работать в команде: стараюсь слушать других, поддерживать и находить решения, которые подходят всем. ',
-    bioPrevious: 'Ранее работала в Банке Санкт-Петербург и еще нескольких компаниях. Подробнее в моём',
+      'Мне очень важно качество мелочей — особенно анимации и техническая реализация продукта. А ещё я люблю работать в команде: стараюсь слушать других, поддерживать и находить решения, которые подходят всем.',
+    bioPrevious: 'Ранее работала в Банке Санкт-Петербург и ещё нескольких компаниях. Подробнее в моём',
     resumeLabel: 'резюме / cv',
     and: 'и',
     socialsLabel: 'остальные соцсети',

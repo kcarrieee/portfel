@@ -1,9 +1,9 @@
 ---
 title: "Tulip Festival branding"
-summary: "Placeholder summary — replace with the real case study write-up."
+summary: "A festival identity combining endangered tulips, Kalmyk culture, and practical wayfinding."
 year: "2024"
 order: 9
-role: "Sole Designer"
+role: "Sole designer"
 ---
 ## The Challenge
 
@@ -56,4 +56,3 @@ Zone color-coding ended up being my favorite call in the whole project: guests d
 ## The Takeaway
 
 What came out of this isn't just "a pretty flower." It's a way of telling a story — why this tulip is rare, why the steppe is worth protecting, why Kalmykia has a culture unlike anywhere else — all carried through one recognizable mark, a warm sunset palette, and a pattern that shows up everywhere you look at the festival.
-

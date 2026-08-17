@@ -1,14 +1,14 @@
 ---
-title: "Bank Saint Petersburg. Transparent cash back"
-summary: "Placeholder summary — replace with the real case study write-up."
+title: "Bank Saint Petersburg: Transparent Cashback"
+summary: "A cashback redesign that made complex conditions understandable and increased engagement with the section."
 year: "2023-2025"
-order: 2
+order: 3
 role: "Redesign"
 ---
 
 
 ## Context & Problem
-[Bank Saint-Petersburg](https://www.bspb.ru/) is one of Russia's largest regional banks, founded in 1990. In 2024, the bank posted record net profit of ₽50.8 billion. The BSPB services have ~500–600K DAU and ~1 million MAU active users. 
+[Bank Saint Petersburg](https://www.bspb.ru/) is one of Russia's largest regional banks, founded in 1990. In 2024, the bank posted record net profit of ₽50.8 billion. Its digital services have approximately 500,000–600,000 DAU and 1 million MAU.
 
 BSPB runs several cashback programs across Visa, Mastercard, and Mir cards — each with its own conditions, rates, and accrual limits. For premium cards, the elevated rate (1–1.5%) only kicks in when a customer hits specific monthly spend thresholds and maintains the right category mix.
 
@@ -73,7 +73,7 @@ All hypotheses follow the same format:
 
 H1 · Actionable conditions widget. Swap the static conditions list for a dynamic widget with a personalized nudge: *"Spend ₽8,500 more before the month ends."* We measure condition completion rate and support contacts. We expect both to move — more completions, fewer tickets.
 
-H2 · Progress over prose.Replace the wall of text with real-time progress bars — total spend vs. threshold, category share. We measure completion rate and how long it takes someone to answer "did I hit my conditions?" Kill it if that task time doesn't drop.
+H2 · Progress over prose. Replace the wall of text with real-time progress bars — total spend vs. threshold, category share. We measure completion rate and how long it takes someone to answer "did I hit my conditions?" Kill it if that task time doesn't drop.
 
 ![Project research](../../../assets/bspb/bspb_image_widget.png)
 
@@ -98,15 +98,15 @@ H7 · Forecast as a range, not a single number. Show "estimated ₽1,400–1,520
 
 H8 · Different experience for different segments. New users get onboarding and education — "here's how cashback works." Power users get spend optimization tools. Research flagged two distinct segments with different needs, but we shipped one experience for both. We measure new user activation and power user engagement separately.
 
-H9 · Contextual nudge at the point of decision.Surface the elevated cashback rate before or during a purchase — in the partner map, in the Apple/Google Pay overlay — not after the fact in the app. This changes actual spending behavior, not just awareness. It's a direct extension of the actionable widget from H1.
+H9 · Contextual nudge at the point of decision. Surface the elevated cashback rate before or during a purchase — in the partner map, in the Apple/Google Pay overlay — not after the fact in the app. This changes actual spending behavior, not just awareness. It's a direct extension of the actionable widget from H1.
 
 H10 · Loss-aversion framing. "You're losing your 1.5% rate — spend ₽2,000 to keep it" vs. "spend ₽2,000 to earn 1.5%." Loss framing is consistently more motivating in financial contexts. That said, it edges into manipulation territory — mandatory guardrail on CSAT and pressure-related complaints. Kill it if complaints go up or CSAT drops.
 
-Prioritization
+## Prioritization
 
-Six — now twelve — hypotheses without ranking is just a backlog. Here's the RICE breakdown (Reach × Impact × Confidence ÷ Effort) to make the launch sequence explicit
+Ten hypotheses without ranking are just a backlog. Here's the RICE breakdown (Reach × Impact × Confidence ÷ Effort) that made the launch sequence explicit.
 
-Then I started designing high fidelity flow, delivering all components that are needed
+I then designed the high-fidelity flow and delivered all the required components.
 ![Project research](../../../assets/bspb/bspb_image_interface.png)
 
 
@@ -134,5 +134,3 @@ What We Moved:
 - Support contacts: 120 → 32 per month — the clearest signal that transparency is working.
 - Condition completion rate: 42% → 60%.
 - CSAT: 3.1 → 4.0 · NPS: −8 → +10 — from negative territory to positive.
-
-

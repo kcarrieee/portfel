@@ -5,6 +5,15 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
+  image: {
+    // Article media never renders wider than 600 CSS pixels. Capping the
+    // generated candidates at 1200px preserves full 2x Retina detail while
+    // keeping the original multi-thousand-pixel files out of browser srcsets.
+    layout: 'full-width',
+    responsiveStyles: true,
+    breakpoints: [320, 480, 600, 900, 1200],
+  },
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'ru'],

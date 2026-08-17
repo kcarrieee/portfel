@@ -28,7 +28,7 @@ const content = homeContent[lang];
       <span class="name-trigger" data-photo-trigger tabindex="0" role="button" aria-expanded="false" aria-label={content.firstName}>
         <span class="avatar" aria-hidden="true"></span>{' '}<span class="highlight">{content.firstName}</span>
         <span class="photo-popup" data-photo-popup>
-          <Image src={karinaPhoto} alt={content.firstName} width={220} densities={[1, 2]} />
+          <Image src={karinaPhoto} alt={content.firstName} width={220} layout="fixed" />
         </span>
       </span>{' '}{content.bioGreetingRest}
     </p>
@@ -41,13 +41,11 @@ const content = homeContent[lang];
     <p class="paragraph appear" style="--appear-delay: 120ms">{content.bioCraft}</p>
     <p class="previous appear" style="--appear-delay: 160ms">
       {content.bioPrevious}{' '}
-      <a class="icon-link" href={links.resume}>
-        <!-- <img src="/icons/icon-resume.svg" alt="" width="16" height="16" /> -->
+      <a class="icon-link" href={links.resume[lang]} target="_blank" rel="noopener noreferrer">
         {content.resumeLabel}
       </a>{' '}
       {content.and}{' '}
       <a class="icon-link" href="#contact">
-        <!-- <img src="/icons/icon-mail.svg" alt="" width="16" height="16" /> -->
         {content.socialsLabel}
       </a>
     </p>
@@ -216,6 +214,17 @@ const content = homeContent[lang];
     text-decoration: none;
     border-bottom: 1px solid #5d5d5d;
     padding-bottom: 0.5px;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  /* Underline brightens alongside the text — fading only the text would
+     leave the rule looking detached mid-transition. */
+  .link:hover,
+  .link:focus-visible {
+    color: #ffffff;
+    border-bottom-color: #9a9a9a;
   }
 
   .previous {
@@ -235,6 +244,7 @@ const content = homeContent[lang];
     padding-inline: 1px;
     position: relative;
     top: 0;
+    transition: color 200ms ease;
   }
   .icon-link::after {
     content: '';
@@ -243,6 +253,17 @@ const content = homeContent[lang];
     right: 1px;
     bottom: 1px;
     border-bottom: 1px solid #5f5f5f;
+    transition: border-color 200ms ease;
+  }
+
+  .icon-link:hover,
+  .icon-link:focus-visible {
+    color: #ffffff;
+  }
+
+  .icon-link:hover::after,
+  .icon-link:focus-visible::after {
+    border-bottom-color: #9a9a9a;
   }
 
   .icon-link img {

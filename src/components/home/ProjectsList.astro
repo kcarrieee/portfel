@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
 import ProjectCardLink from './ProjectCardLink.astro';
 import CoverVisual from './visuals/CoverVisual.astro';
 import VideoVisual from './visuals/VideoVisual.astro';
@@ -9,18 +11,22 @@ import wbImage from '../../assets/projects/wb_chat_333.png';
 import tulipImage from '../../assets/projects/tulip_br.png';
 import chanityImage from '../../assets/projects/chanity_minimal.png';
 import voyagerImage from '../../assets/projects/v_video.mp4';
-import salesImage from '../../assets/projects/sales_kit_1.png';
-import expiVideo from '../../assets/projects/Screen_studio.mp4';
+import salesImage from '../../assets/projects/project_image_saleskit.webp';
+import expiImg from '../../assets/projects/expi_projectfinal.webp';
 import alfaBankVideo from '../../assets/projects/alfa_bank.mp4';
 import designSystemVideo from '../../assets/projects/design_system.mp4';
+import wbspace from "../../assets/projects/wb_workspace.webp"
 
 
 interface Props {
   projects: CollectionEntry<'projects'>[];
   basePath: string;
+  lang: Lang;
 }
 
-const { projects, basePath } = Astro.props;
+const { projects, basePath, lang } = Astro.props;
+const t = useTranslations(lang);
+const ndaTooltip = t('project.ndaTooltip');
 ---
 
   <div class="projects">
@@ -34,9 +40,11 @@ const { projects, basePath } = Astro.props;
             title={project.data.title}
             year={project.data.year ?? ''}
             delay={230 + index * 12}
+            nda={project.data.nda}
+            ndaTooltip={ndaTooltip}
           >
             {slug === 'bank-spb' && <CoverVisual image={bspbImage} alt={project.data.title} />}
-            {slug === 'ai-concierge' && <VideoVisual src={expiVideo} />}
+            {slug === 'ai-concierge' && <CoverVisual image={expiImg} alt={project.data.title} />}
             {slug === 'wb-chat' && <CoverVisual image={wbImage} alt={project.data.title} />}
             {slug === 'last-project' && <VideoVisual src={designSystemVideo} />}
             {slug === 'alpha-bank' && <VideoVisual src={alfaBankVideo} />}
@@ -44,6 +52,7 @@ const { projects, basePath } = Astro.props;
             {slug === 'voyager' && <VideoVisual src={voyagerImage} />}
             {slug === 'saleskit' && <CoverVisual image={salesImage} alt={project.data.title} />}
             {slug === 'chanity-brand' && <CoverVisual image={chanityImage} alt={project.data.title} />}
+            {slug === 'wb-workspace' && <CoverVisual image={wbspace} alt={project.data.title} />}
           </ProjectCardLink>
           
         );

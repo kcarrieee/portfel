@@ -1,10 +1,9 @@
 ---
 title: "Voyager — modular chat system"
-summary: "Placeholder summary — replace with the real case study write-up."
-year: "2025-2026"
+summary: "A reusable messaging module for banking documents that reduced support calls and accelerated future launches."
+year: "2024"
 order: 5
 role: "Sole product designer"
-duration: "2 months"
 ---
 ## Overview
 
@@ -90,4 +89,3 @@ I worked every scenario down to its states: empty thread, sending, send failure,
 Alongside those: completed request conversion +15%, staff processing speed +20%, unfinished requests −18%.
 
 And the payoff modularity was built for: subsequent messaging scenarios in other sections shipped roughly 60% faster, with fewer bugs, because the components were already there.
-

@@ -4,21 +4,44 @@ interface Props {
   title: string;
   year: string;
   delay?: number;
+  nda?: boolean;
+  ndaTooltip?: string;
 }
 
-const { href, title, year, delay = 0 } = Astro.props;
+const { href, title, year, delay = 0, nda = false, ndaTooltip } = Astro.props;
+
+// An NDA card still shows its cover and title, but renders as a plain
+// container instead of a link — no href at all, so there's nothing to
+// click through to and no pointer cursor implying otherwise.
+const Tag = nda ? 'div' : 'a';
 ---
 
 
-<a class="project-card appear" href={href} style={`--appear-delay: ${delay}ms`}>
+<Tag
+  class:list={['project-card', 'appear', { 'is-nda': nda }]}
+  href={nda ? undefined : href}
+  style={`--appear-delay: ${delay}ms`}
+>
   <div class="visual">
-    <slot />
+    <div class="cover-layer">
+      <slot />
+    </div>
+    {
+      nda && ndaTooltip && (
+        <span class="nda-tooltip-layer" aria-hidden="true">
+          <span class="nda-tooltip">{ndaTooltip}</span>
+        </span>
+      )
+    }
   </div>
   <div class="meta">
-    <p class="title">{title}</p>
+    <div class="meta-main">
+      <p class="title">{title}</p>
+      {nda && <p class="nda">Under NDA</p>}
+    </div>
     <p class="year">{year}</p>
   </div>
-</a>
+</Tag>
 
 <style>
   .project-card {
@@ -112,6 +135,81 @@ const { href, title, year, delay = 0 } = Astro.props;
     }
   }
 
+  /* Wraps the cover so the blur can be applied to one element we own,
+     rather than reaching into whichever visual component filled the slot.
+     `position: absolute; inset: 0` because `filter` makes this a
+     containing block — the slotted media positions itself against this
+     layer, so it has to match `.visual`'s box exactly. */
+  .cover-layer {
+    position: absolute;
+    inset: 0;
+    filter: none;
+    transition:
+      filter 300ms ease,
+      transform 300ms ease;
+  }
+
+  /* Blur samples transparent pixels past the layer's edge, which would
+     fade the card's border into the background. The slight scale pushes
+     those edges out of sight behind `.visual`'s `overflow: hidden`. */
+  .project-card.is-nda:hover .cover-layer {
+    filter: blur(6px);
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cover-layer {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  /* Centring layer, so the tooltip itself is free to use `transform` for
+     its entrance without having to fold a `translate(-50%, -50%)` into
+     every keyframe of the animation. */
+  .nda-tooltip-layer {
+    position: absolute;
+    inset: 0;
+    /* Above the shimmer ring (z-index: 1) drawn over the cover. */
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    pointer-events: none;
+  }
+
+  .nda-tooltip {
+    max-width: 320px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: rgba(17, 17, 17, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    color: #e8e8e8;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    text-wrap: balance;
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+    transition:
+      opacity 240ms ease,
+      transform 240ms ease;
+  }
+
+  .project-card:hover .nda-tooltip {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nda-tooltip {
+      transition-duration: 0.01ms;
+    }
+  }
+
   .meta {
     display: flex;
     align-items: flex-start;
@@ -120,9 +218,22 @@ const { href, title, year, delay = 0 } = Astro.props;
     font-size: 14px;
   }
 
+  .meta-main {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+
   .title {
     margin: 0;
     color: var(--color-text);
+  }
+
+  .nda {
+    margin: 0;
+    color: #e5484d;
+    white-space: nowrap;
   }
 
   .year {

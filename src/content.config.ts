@@ -13,6 +13,9 @@ const projects = defineCollection({
     year: z.string().optional(),
     cover: z.string().optional(),
     order: z.number().default(0),
+    /** Covered by an NDA: the card is shown but not clickable, and it's
+     *  labelled instead of linking through to a case study. */
+    nda: z.boolean().default(false),
   }),
 });
 

@@ -73,16 +73,6 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
 </Layout>
 
 <script>
-  // Load-in cascade (see `.appear` in global.css). `.toc`, `.nav`, `.cover`,
-  // and the header are tagged with a fixed `--appear-delay` directly in the
-  // markup; the article body is arbitrary rendered markdown, so its direct
-  // children (h2, p, ul, img, video, ...) are tagged here instead, each a
-  // little later than the last. The delay growth is capped so a very long
-  // article doesn't push the tail elements out several seconds.
-  //
-  // Whether the cascade actually animates is decided in CSS by the
-  // `.no-appear` class Layout.astro sets on router-swapped renders, so
-  // there's nothing to check here — tagging is unconditional.
   function initAppearCascade() {
     const content = document.querySelector<HTMLElement>('.content');
     if (!content) return;
@@ -126,18 +116,39 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     const videos = document.querySelectorAll<HTMLVideoElement>('.content video[data-lazy-video]');
     if (videos.length === 0) return;
 
+    const loadVideo = (video: HTMLVideoElement) => {
+      if (video.hasAttribute('src')) return;
+
+      const src = video.dataset.src;
+      if (!src) return;
+
+      video.src = src;
+      video.load();
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      videos.forEach((video) => {
+        loadVideo(video);
+        video.play().catch(() => {});
+      });
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
+            loadVideo(video);
             video.play().catch(() => {});
           } else {
             video.pause();
           }
         }
       },
-      { threshold: 0.5 },
+      // Article videos can be very large, so keep the lead distance small:
+      // fast-start metadata lets playback begin as soon as the nearby load starts.
+      { rootMargin: '150px 0px', threshold: 0.01 },
     );
 
     videos.forEach((video) => observer.observe(video));

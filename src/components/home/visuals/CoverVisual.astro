@@ -10,7 +10,13 @@ interface Props {
 const { image, alt = '' } = Astro.props;
 ---
 
-<Image class="cover" src={image} alt={alt} width={1140} />
+<Image
+  class="cover"
+  src={image}
+  alt={alt}
+  width={1140}
+  sizes="(max-width: 549px) calc(100vw - 40px), 570px"
+/>
 
 <style>
   .cover {

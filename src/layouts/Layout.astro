@@ -9,6 +9,15 @@ interface Props {
 }
 
 const { lang, title } = Astro.props;
+const description =
+  lang === 'ru'
+    ? 'Портфолио Карины Литвиновой — продуктовый дизайн, исследования и дизайн-системы.'
+    : 'Karina Litvinova’s product design portfolio — selected work, product thinking, and design systems.';
+const previewImage = '/preview_portfolio.png';
+const previewImageAlt =
+  lang === 'ru'
+    ? 'Превью портфолио Карины Литвиновой'
+    : 'Preview of Karina Litvinova’s product design portfolio';
 ---
 
 <!doctype html>
@@ -16,7 +25,29 @@ const { lang, title } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Karina Litvinova" />
+    <meta property="og:locale" content={lang === 'ru' ? 'ru_RU' : 'en_US'} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={previewImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1679" />
+    <meta property="og:image:height" content="1166" />
+    <meta property="og:image:alt" content={previewImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={previewImage} />
+    <meta name="twitter:image:alt" content={previewImageAlt} />
     <ClientRouter />
   </head>
   <body>

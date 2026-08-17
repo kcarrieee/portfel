@@ -6,7 +6,15 @@ interface Props {
 const { src } = Astro.props;
 ---
 
-<video class="video" src={src} muted loop playsinline disableremoteplayback data-lazy-video
+<video
+  class="video"
+  data-src={src}
+  preload="none"
+  muted
+  loop
+  playsinline
+  disableremoteplayback
+  data-lazy-video
 ></video>
 
 <style>
@@ -21,22 +29,43 @@ const { src } = Astro.props;
 </style>
 
 <script>
+  function loadVideo(video: HTMLVideoElement) {
+    if (video.hasAttribute('src')) return;
+
+    const src = video.dataset.src;
+    if (!src) return;
+
+    video.src = src;
+    video.load();
+  }
+
   function initLazyVideos() {
     const videos = document.querySelectorAll<HTMLVideoElement>('video[data-lazy-video]');
     if (videos.length === 0) return;
+
+    if (!('IntersectionObserver' in window)) {
+      videos.forEach((video) => {
+        loadVideo(video);
+        video.play().catch(() => {});
+      });
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
+            loadVideo(video);
             video.play().catch(() => {});
           } else {
             video.pause();
           }
         }
       },
-      { threshold: 0.5 },
+      // Begin loading shortly before the card appears so playback is ready
+      // when the visitor reaches it, without fetching every video at load.
+      { rootMargin: '400px 0px', threshold: 0.01 },
     );
 
     videos.forEach((video) => observer.observe(video));

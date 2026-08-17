@@ -31,5 +31,20 @@ const footer = homeContent[lang].footer;
   .footer-links a {
     color: inherit;
     text-decoration: none;
+    transition: color 200ms ease;
+  }
+
+  .footer-links a:hover,
+  .footer-links a:focus-visible {
+    color: #dddddd;
+  }
+  
+  @media (max-width: 549px) {
+    .footer-links {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
   }
 </style>

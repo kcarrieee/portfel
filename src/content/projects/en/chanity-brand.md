@@ -1,6 +1,6 @@
 ---
 title: "Chanity brand direction and logo"
-summary: "Placeholder summary — replace with the real case study write-up."
+summary: "A brand strategy and identity built around interweaving, connection, and independent participation."
 year: "2026"
 order: 10
 role: "Sole designer"
@@ -9,8 +9,8 @@ role: "Sole designer"
 
 When I started working on this project, the client didn't have a clear vision of what they actually wanted. They knew they needed a brand. They couldn't tell me what it should feel like, who it was really for, or what separated it from the twenty other platforms doing something adjacent. The brief was, more or less, "make it look serious but not boring."
 
-So I started with research, and I ran a lot of interviews. So here's what we ended up with 
-<video src="/videos/chanity-brand/branding.mp4" muted loop playsinline disableremoteplayback data-lazy-video></video>
+So I started with research and ran a lot of interviews. Here's what we ended up with.
+<video data-src="/videos/chanity-brand/branding.mp4" preload="none" muted loop playsinline disableremoteplayback data-lazy-video></video>
 
 I talked to the founders, to two developers building on the platform, and to a handful of people from the community — including some who'd tried the product and drifted away. I asked all of them the same set of dull questions. What does this thing do for you? What would you lose if it disappeared tomorrow? What do you tell your friends it is?
 
@@ -30,7 +30,7 @@ Then I went and looked at the category, because you can't position anything in a
 
 And that's where I got stuck for about a week. Because "chain" is the default metaphor for the entire industry, and it's a genuinely bad one.
 
-A chain is linear. Links sit in a fixed order, each one dependent on the one before it, and the whole thing is only as strong as its weakest point. That's not how any of these networks actually behave. It's not how communities behave. It's certainly not how the thing I'd heard in those interviews behaved — *I don't have to give anything up to be part of it. I needed a different metaphor, and the obvious ones — web, mesh, hub — were either taken or dead from overuse.
+A chain is linear. Links sit in a fixed order, each one dependent on the one before it, and the whole thing is only as strong as its weakest point. That's not how any of these networks actually behave. It's not how communities behave. It's certainly not how the thing I'd heard in those interviews behaved — *I don't have to give anything up to be part of it.* I needed a different metaphor, and the obvious ones — web, mesh, hub — were either taken or dead from overuse.
 
 ## The word
 
