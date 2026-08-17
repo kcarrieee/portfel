@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import type { Lang } from '../i18n/ui';
 import '../styles/global.css';
+import graphikRegularUrl from '../assets/fonts/Graphik-Regular.woff2?url';
 
 interface Props {
   lang: Lang;
@@ -11,8 +12,8 @@ interface Props {
 const { lang, title } = Astro.props;
 const description =
   lang === 'ru'
-    ? 'Портфолио Карины Литвиновой — продуктовый дизайн, исследования и дизайн-системы.'
-    : 'Karina Litvinova’s product design portfolio — selected work, product thinking, and design systems.';
+    ? 'Product design portfolio'
+    : 'Product design portfolio';
 const previewImage = '/preview_portfolio.png';
 const previewImageAlt =
   lang === 'ru'
@@ -31,6 +32,13 @@ const previewImageAlt =
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link
+    rel="preload"
+    href={graphikRegularUrl}
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Karina Litvinova" />
