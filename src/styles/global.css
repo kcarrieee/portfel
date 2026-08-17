@@ -70,9 +70,28 @@ img {
   }
 }
 
+/* Safari can defer painting descendants while their parent combines a
+   filter animation with other composited layers. The first bio line owns
+   the profile image and popup, so it uses the same fade-and-rise entrance
+   without the blur; other `.appear` elements keep the full effect. */
+@keyframes appear-content-without-filter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .appear {
   animation: appear-content 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   animation-delay: var(--appear-delay, 0s);
+}
+
+.appear-without-filter {
+  animation-name: appear-content-without-filter;
 }
 
 /* Set on <html> by Layout.astro the moment a client-side navigation swaps
@@ -89,7 +108,8 @@ img {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .appear {
+  .appear,
+  .appear-without-filter {
     animation: none;
   }
 }
@@ -146,4 +166,3 @@ img {
     animation: none;
   }
 }
-

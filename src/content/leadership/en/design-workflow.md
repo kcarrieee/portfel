@@ -1,7 +1,7 @@
 ---
 title: "My design workflow"
 summary: "A practical workflow for moving from context and problem framing to validation, launch, and iteration."
-year: "Approach"
+year: "Crafted"
 order: 1
 ---
 

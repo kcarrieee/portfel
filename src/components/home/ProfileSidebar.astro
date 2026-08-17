@@ -23,10 +23,12 @@ const content = homeContent[lang];
   </div>
 
   <div class="bio">
-    <p class="paragraph appear" style="--appear-delay: 40ms">
+    <p class="paragraph appear appear-without-filter" style="--appear-delay: 40ms">
       {content.bioGreeting}{' '}
       <span class="name-trigger" data-photo-trigger tabindex="0" role="button" aria-expanded="false" aria-label={content.firstName}>
-        <span class="avatar" aria-hidden="true"></span>{' '}<span class="highlight">{content.firstName}</span>
+        <span class="avatar" aria-hidden="true">
+          <Image src={karinaPhoto} alt="" width={24} height={23} layout="fixed" loading="eager" />
+        </span>{' '}<span class="highlight">{content.firstName}</span>
         <span class="photo-popup" data-photo-popup>
           <Image src={karinaPhoto} alt={content.firstName} width={220} layout="fixed" />
         </span>
@@ -147,10 +149,17 @@ const content = homeContent[lang];
     width: 24px;
     height: 23px;
     border-radius: 4px;
-    background: url('../../assets/projects/karina-photo.png') center / cover no-repeat;
+    overflow: hidden;
     vertical-align: middle;
     position: relative;
     top: 5px;
+  }
+
+  .avatar :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .highlight {

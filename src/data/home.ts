@@ -18,7 +18,7 @@ export const homeContent = {
     bioGreeting: 'Hey! I am',
     bioGreetingRest: 'a product designer with an eye for details',
     bioRoleIntro: 'Now I design at',
-    companyName: 'Wildberries',
+    companyName: 'wildberries',
     bioRoleRest:
       "I'm good at quickly diving into complex domains, turning complexity into clarity, and using storytelling to move ideas from concept to launch.",
     bioCraft:
@@ -45,11 +45,11 @@ export const homeContent = {
     bioGreeting: 'Привет! Я',
     bioGreetingRest: 'дизайнер, которому важны детали',
     bioRoleIntro: 'Сейчас работаю в',
-    companyName: 'Wildberries',
+    companyName: 'wildberries',
     bioRoleRest:
       'Быстро погружаюсь в сложные области, превращаю сложность в ясность и довожу идею от концепции до запуска.',
     bioCraft:
-      'Мне очень важно качество мелочей — особенно анимации и техническая реализация продукта. А ещё я люблю работать в команде: стараюсь слушать других, поддерживать и находить решения, которые подходят всем.',
+      'Мне очень важно качество мелочей особенно анимации и техническая реализация. А ещё я люблю работать в команде: стараюсь слушать других, поддерживать и находить решения, которые подходят всем.',
     bioPrevious: 'Ранее работала в Банке Санкт-Петербург и ещё нескольких компаниях. Подробнее в моём',
     resumeLabel: 'резюме / cv',
     and: 'и',
