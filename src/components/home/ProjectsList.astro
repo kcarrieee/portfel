@@ -27,7 +27,30 @@ interface Props {
 const { projects, basePath, lang } = Astro.props;
 const t = useTranslations(lang);
 const ndaTooltip = t('project.ndaTooltip');
+const projectsHeading = t('home.projectsHeading');
+const gridViewLabel = t('home.projectsGridView');
+const listViewLabel = t('home.projectsListView');
 ---
+
+<section class="projects-section" data-projects-section>
+  <div class="projects-toolbar appear" style="--appear-delay: 210ms">
+    <h2>{projectsHeading}</h2>
+    <button
+      class="grid-toggle"
+      type="button"
+      aria-label={gridViewLabel}
+      aria-pressed="false"
+      data-grid-toggle
+      data-grid-label={gridViewLabel}
+      data-list-label={listViewLabel}
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path
+          d="M3 12C3.26522 12 3.51957 12.1054 3.70711 12.2929C3.89464 12.4804 4 12.7348 4 13C4 13.2652 3.89464 13.5196 3.70711 13.7071C3.51957 13.8946 3.26522 14 3 14C2.73478 14 2.48043 13.8946 2.29289 13.7071C2.10536 13.5196 2 13.2652 2 13C2 12.7348 2.10536 12.4804 2.29289 12.2929C2.48043 12.1054 2.73478 12 3 12ZM8 12C8.26522 12 8.51957 12.1054 8.70711 12.2929C8.89464 12.4804 9 12.7348 9 13C9 13.2652 8.89464 13.5196 8.70711 13.7071C8.51957 13.8946 8.26522 14 8 14C7.73478 14 7.48043 13.8946 7.29289 13.7071C7.10536 13.5196 7 13.2652 7 13C7 12.7348 7.10536 12.4804 7.29289 12.2929C7.48043 12.1054 7.73478 12 8 12ZM13 12C13.2652 12 13.5196 12.1054 13.7071 12.2929C13.8946 12.4804 14 12.7348 14 13C14 13.2652 13.8946 13.5196 13.7071 13.7071C13.5196 13.8946 13.2652 14 13 14C12.7348 14 12.4804 13.8946 12.2929 13.7071C12.1054 13.5196 12 13.2652 12 13C12 12.7348 12.1054 12.4804 12.2929 12.2929C12.4804 12.1054 12.7348 12 13 12ZM3 7C3.26522 7 3.51957 7.10536 3.70711 7.29289C3.89464 7.48043 4 7.73478 4 8C4 8.26522 3.89464 8.51957 3.70711 8.70711C3.51957 8.89464 3.26522 9 3 9C2.73478 9 2.48043 8.89464 2.29289 8.70711C2.10536 8.51957 2 8.26522 2 8C2 7.73478 2.10536 7.48043 2.29289 7.29289C2.48043 7.10536 2.73478 7 3 7ZM8 7C8.26522 7 8.51957 7.10536 8.70711 7.29289C8.89464 7.48043 9 7.73478 9 8C9 8.26522 8.89464 8.51957 8.70711 8.70711C8.51957 8.89464 8.26522 9 8 9C7.73478 9 7.48043 8.89464 7.29289 8.70711C7.10536 8.51957 7 8.26522 7 8C7 7.73478 7.10536 7.48043 7.29289 7.29289C7.48043 7.10536 7.73478 7 8 7ZM13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8C14 8.26522 13.8946 8.51957 13.7071 8.70711C13.5196 8.89464 13.2652 9 13 9C12.7348 9 12.4804 8.89464 12.2929 8.70711C12.1054 8.51957 12 8.26522 12 8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7ZM3 2C3.26522 2 3.51957 2.10536 3.70711 2.29289C3.89464 2.48043 4 2.73478 4 3C4 3.26522 3.89464 3.51957 3.70711 3.70711C3.51957 3.89464 3.26522 4 3 4C2.73478 4 2.48043 3.89464 2.29289 3.70711C2.10536 3.51957 2 3.26522 2 3C2 2.73478 2.10536 2.48043 2.29289 2.29289C2.48043 2.10536 2.73478 2 3 2ZM8 2C8.26522 2 8.51957 2.10536 8.70711 2.29289C8.89464 2.48043 9 2.73478 9 3C9 3.26522 8.89464 3.51957 8.70711 3.70711C8.51957 3.89464 8.26522 4 8 4C7.73478 4 7.48043 3.89464 7.29289 3.70711C7.10536 3.51957 7 3.26522 7 3C7 2.73478 7.10536 2.48043 7.29289 2.29289C7.48043 2.10536 7.73478 2 8 2ZM13 2C13.2652 2 13.5196 2.10536 13.7071 2.29289C13.8946 2.48043 14 2.73478 14 3C14 3.26522 13.8946 3.51957 13.7071 3.70711C13.5196 3.89464 13.2652 4 13 4C12.7348 4 12.4804 3.89464 12.2929 3.70711C12.1054 3.51957 12 3.26522 12 3C12 2.73478 12.1054 2.48043 12.2929 2.29289C12.4804 2.10536 12.7348 2 13 2Z"
+          fill="currentColor"></path>
+      </svg>
+    </button>
+  </div>
 
   <div class="projects">
     {
@@ -59,17 +82,124 @@ const ndaTooltip = t('project.ndaTooltip');
       })
     }
   </div>
+</section>
 
 <style>
+  .projects-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .projects-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .projects-toolbar h2 {
+    margin: 0;
+    color: #777777;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .grid-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-right: -6px;
+    padding: 6px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #eaeaea;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .grid-toggle:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+  }
+
+  .grid-toggle:active {
+    transform: scale(0.94);
+  }
+
+  .grid-toggle:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+
+  .grid-toggle[aria-pressed='true'] {
+    color: #eaeaea;
+  }
+
+  .grid-toggle svg {
+    display: block;
+    flex: 0 0 auto;
+  }
+
   .projects {
     display: flex;
     flex-direction: column;
     gap: 60px;
     width: 100%;
   }
+
+  .projects.is-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+    row-gap: 44px;
+  }
+
   .selected {
     font-size: 12px;
     color: #A0A0A0;
     margin-bottom: 16px;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid-toggle {
+      transition-duration: 0.01ms;
+    }
+  }
 </style>
+
+<script>
+  import { triggerHaptic } from '../../utils/haptics';
+  import { playClickSound } from '../../utils/sound';
+
+  function initProjectGridToggles() {
+    document.querySelectorAll<HTMLElement>('[data-projects-section]').forEach((section) => {
+      const button = section.querySelector<HTMLButtonElement>('[data-grid-toggle]');
+      const projects = section.querySelector<HTMLElement>('.projects');
+      if (!button || !projects || button.dataset.initialized === 'true') return;
+
+      button.dataset.initialized = 'true';
+      button.addEventListener('click', () => {
+        const isGrid = projects.classList.toggle('is-grid');
+        button.setAttribute('aria-pressed', String(isGrid));
+        button.setAttribute(
+          'aria-label',
+          isGrid ? (button.dataset.listLabel ?? '') : (button.dataset.gridLabel ?? ''),
+        );
+        triggerHaptic();
+        playClickSound();
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initProjectGridToggles);
+</script>

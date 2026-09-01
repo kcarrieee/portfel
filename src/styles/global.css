@@ -26,7 +26,8 @@
 }
 
 :root {
-  --color-bg: #111111;
+  /* --color-bg: #111111; */
+  --color-bg: #111111; 
   --color-card-bg: #272727;
   --color-text: #f7f7f7;
   --color-text-muted-1: #9c9b9b;

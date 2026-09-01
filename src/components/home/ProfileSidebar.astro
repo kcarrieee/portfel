@@ -16,9 +16,11 @@ const content = homeContent[lang];
 <div class="hero">
   <div class="photo-backdrop" aria-hidden="true"></div>
   <div class="top-row appear" style="--appear-delay: 0ms">
-    <div class="logo_text">good evening,
-      こんばんは</div>
-    <!-- <div class="logo" aria-hidden="true"></div> -->
+    <!-- <div class="logo_text">good evening,
+      こんばんは</div> -->
+      
+      <div class="logo_text">Hey, good evening °˖✧◝(⁰▿⁰)◜✧˖° </div>
+     
     <LanguageSwitch lang={lang} altHref={altHref} />
   </div>
 
@@ -34,13 +36,16 @@ const content = homeContent[lang];
         </span>
       </span>{' '}{content.bioGreetingRest}
     </p>
-    <p class="paragraph appear" style="--appear-delay: 80ms">
+   
+    <p class="paragraph appear" style="--appear-delay: 80ms">{content.bioCraft}</p>
+
+    <p class="paragraph appear" style="--appear-delay: 120ms">
       {content.bioRoleIntro}{' '}
       <a class="link" href={links.wildberries} target="_blank" rel="noopener noreferrer"
         >{content.companyName}</a
       >. {content.bioRoleRest}
     </p>
-    <p class="paragraph appear" style="--appear-delay: 120ms">{content.bioCraft}</p>
+
     <p class="previous appear" style="--appear-delay: 160ms">
       {content.bioPrevious}{' '}
       <a class="icon-link" href={links.resume[lang]} target="_blank" rel="noopener noreferrer">
@@ -78,7 +83,8 @@ const content = homeContent[lang];
     scale: 1.2;
   }
   .logo_text {
-    color: #5f5f5f;
+    color: #6e6e6e;
+    font-size: 14px;
   }
 
   .bio {
@@ -90,10 +96,12 @@ const content = homeContent[lang];
 
   .paragraph {
     margin: 0;
-    color: var(--color-text-muted-1);
+    /* color: var(--color-text-muted-1); */
+    color:rgb(232, 232, 232);
     font-size: 14px;
-    line-height: 22px;
+    line-height: 23px;
   }
+  
  
 
   .name-trigger {
@@ -163,7 +171,7 @@ const content = homeContent[lang];
   }
 
   .highlight {
-    color: #dddddd;
+    color: #ffffff;
   }
 
   .photo-popup {
@@ -219,36 +227,30 @@ const content = homeContent[lang];
   }
 
   .link {
-    color: #d3d3d3;
+    color: #ffffff;
     text-decoration: none;
-    border-bottom: 1px solid #5d5d5d;
-    padding-bottom: 0.5px;
-    transition:
-      color 200ms ease,
-      border-color 200ms ease;
+    transition: color 200ms ease;
   }
 
-  /* Underline brightens alongside the text — fading only the text would
-     leave the rule looking detached mid-transition. */
   .link:hover,
   .link:focus-visible {
-    color: #ffffff;
-    border-bottom-color: #9a9a9a;
+    color: #e313bf;
   }
 
-  .previous {
+  .previous  {
     margin: 0;
     width: 100%;
-    color: var(--color-text-muted-1);
+    /* color: var(--color-text-muted-1); */
+    color:white;
     font-size: 14px;
-    line-height: 22px;
+    line-height: 23px;
   }
 
   .icon-link {
     display: inline-flex;
     align-items: flex-end;
     gap: 2px;
-    color: #dddddd;
+    color: #f9f9f9;
     text-decoration: none;
     padding-inline: 1px;
     position: relative;
@@ -334,16 +336,7 @@ const content = homeContent[lang];
     }
 
   @media (max-width: 549px) {
-    .paragraph {
-    margin: 0;
-    color: var(--color-text-muted-1);
-    font-size: 15px;
-    line-height: 24px;
-    }
-    .previous {
-      font-size: 15px;
-      line-height: 24px;
-    }
+   
     .top-row{
       padding-bottom: 20px;
     }
