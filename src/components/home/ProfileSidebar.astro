@@ -121,6 +121,7 @@ const content = homeContent[lang];
     inset: 0;
     z-index: 15;
     pointer-events: none;
+    background-color: rgba(17, 17, 17, 0);
     /* Deliberately `none`, not `blur(0px)` — some CSS minifiers collapse a
        zero-argument blur() into an invalid empty `blur()`, which silently
        drops the whole declaration. `none` interpolates to/from `blur()`
@@ -128,13 +129,18 @@ const content = homeContent[lang];
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     transition:
+      background-color 400ms ease,
       backdrop-filter 400ms ease,
       -webkit-backdrop-filter 400ms ease;
+    will-change: background-color, backdrop-filter;
   }
 
   :global(body:has(.name-trigger:hover)) .photo-backdrop,
   :global(body:has(.name-trigger:focus-visible)) .photo-backdrop,
   :global(body:has(.name-trigger.is-open)) .photo-backdrop {
+    /* A barely visible tint forces Safari to composite the transparent
+       full-screen layer, so backdrop-filter remains reliable there too. */
+    background-color: rgba(17, 17, 17, 0.04);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
