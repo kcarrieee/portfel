@@ -22,7 +22,7 @@ const previewImageAlt =
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -32,6 +32,22 @@ const previewImageAlt =
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#111111" />
+    <script is:inline>
+      (() => {
+        let theme = 'dark';
+        try {
+          theme = localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark';
+        } catch {
+          // Dark remains the default when storage is unavailable.
+        }
+        document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute(
+          'content',
+          theme === 'light' ? '#fafafa' : '#111111',
+        );
+      })();
+    </script>
     <link
     rel="preload"
     href={graphikRegularUrl}
@@ -87,6 +103,14 @@ const previewImageAlt =
       }
 
       document.addEventListener('astro:page-load', initLinkSounds);
+
+      document.addEventListener('astro:before-swap', (event) => {
+        const theme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+        event.newDocument.documentElement.dataset.theme = theme;
+        event.newDocument
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute('content', theme === 'light' ? '#fafafa' : '#111111');
+      });
 
       document.addEventListener('astro:after-swap', () => {
         // Mark this render as router-swapped rather than freshly loaded, so

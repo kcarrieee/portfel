@@ -43,9 +43,7 @@ const leadershipItems = [
   .sort((a, b) => a.order - b.order)
   .map(({ order, ...item }) => item);
 
-// Continues the hero's cascade (0-160ms) — one project card at a time,
-// then the leadership block, then the footer, matching shedsgns.me's
-// load-in pacing.
+
 const projectsListDelay = 230;
 const leadershipDelay = projectsListDelay + projects.length * 12 + 40;
 const footerDelay = leadershipDelay + 40;
@@ -114,7 +112,7 @@ const timeDelay = footerDelay + 20;
     gap:8px;
   }
   .foot_warpper p{
-    color:#777777;
+    color: var(--color-text-muted-2);
   }
 
   .timeme_warpper [data-local-time-value] {

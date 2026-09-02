@@ -186,6 +186,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
 
   .toc-back-arrow {
     transform: rotate(-90deg);
+    filter: var(--icon-filter);
   }
 
   .toc-list {
@@ -245,6 +246,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
 
   .back-arrow {
     transform: rotate(-90deg);
+    filter: var(--icon-filter);
   }
 
   .cover {
@@ -300,14 +302,14 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     color: var(--color-block-text);
   }
   .content :global(a) {
-    color: #fff;
+    color: var(--color-text);
     position: relative;
     display: inline;
     font-size: 14px;
     font-weight: 400;
     text-decoration: none;
     padding-bottom: 2px;
-    border-bottom: 1px solid #666667; /* soft grey */
+    border-bottom: 1px solid var(--color-link-underline);
     transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .content :global(a)::after {
@@ -317,7 +319,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
   bottom: 0px;
   width: 100%;
   height: 0.5px;
-  background: #ffffff;
+  background: var(--color-text);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);   

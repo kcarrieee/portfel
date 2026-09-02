@@ -26,8 +26,8 @@
 }
 
 :root {
-  /* --color-bg: #111111; */
-  --color-bg: #111111; 
+  color-scheme: dark;
+  --color-bg: #111111;
   --color-card-bg: #272727;
   --color-text: #f7f7f7;
   --color-text-muted-1: #9c9b9b;
@@ -39,6 +39,20 @@
   --color-link-underline: #48484c;
   --color-block-heading: #ffffff;
   --color-block-text: #989898;
+  --color-copy: #e8e8e8;
+  --color-greeting: #6e6e6e;
+  --color-theme-icon: #ececec;
+  --color-control-hover: rgba(255, 255, 255, 0.05);
+  --color-divider: #2a2a2a;
+  --color-link-hover: #dddddd;
+  --color-link-underline-hover: #9a9a9a;
+  --color-photo-backdrop: rgba(17, 17, 17, 0.04);
+  --color-switch-border-start: #383838;
+  --color-switch-border-end: rgba(43, 43, 43, 0);
+  --color-switch-border-hover-start: #555555;
+  --color-switch-border-hover-end: rgba(70, 70, 70, 0.3);
+  --color-switch-label-hover: #949494;
+  --icon-filter: none;
 
   --font-sans:
   'Graphik Web',
@@ -48,6 +62,36 @@
   'Helvetica Neue',
   Arial,
   sans-serif;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #fafafa;
+  --color-card-bg: #ededed;
+  --color-text: #171717;
+  --color-text-muted-1: #575757;
+  --color-text-muted-2: #777777;
+  --color-text-muted-3: #929292;
+  --color-text-muted-4: #aaaaaa;
+  --color-text-muted-5: #858585;
+  --color-border: #dddddd;
+  --color-link-underline: #b8b8b8;
+  --color-block-heading: #171717;
+  --color-block-text: #626262;
+  --color-copy: #242424;
+  --color-greeting: #777777;
+  --color-theme-icon: #202020;
+  --color-control-hover: rgba(0, 0, 0, 0.055);
+  --color-divider: #dedede;
+  --color-link-hover: #111111;
+  --color-link-underline-hover: #717171;
+  --color-photo-backdrop: rgba(250, 250, 250, 0.08);
+  --color-switch-border-start: #cacaca;
+  --color-switch-border-end: rgba(210, 210, 210, 0.15);
+  --color-switch-border-hover-start: #9f9f9f;
+  --color-switch-border-hover-end: rgba(170, 170, 170, 0.3);
+  --color-switch-label-hover: #555555;
+  --icon-filter: invert(1);
 }
 
 
@@ -66,15 +110,19 @@ body {
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--color-bg);
 }
 
 body {
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 22px;
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
 }
 
 a {

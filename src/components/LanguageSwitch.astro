@@ -8,7 +8,7 @@ interface Props {
 
 const { lang, altHref } = Astro.props;
 const tabOrder = Object.keys(languages) as Lang[];
-const tabLabel: Record<Lang, string> = { en: 'eng', ru: 'ru' };
+const tabLabel: Record<Lang, string> = { en: 'en', ru: 'ru' };
 const otherLang = tabOrder.find((candidate) => candidate !== lang)!;
 const isChecked = lang === tabOrder[1];
 
@@ -132,11 +132,11 @@ const switchAriaLabel: Record<Lang, string> = {
   }
 
   .switch-visual {
-    --switch-tab-width: 40px;
+    --switch-tab-width: 36px;
     /* Меняйте это значение, чтобы настроить padding активного языка. */
-    --switch-active-padding-inline: 2px;
+    --switch-active-padding-inline: 1px;
     /* Расстояние между активным и неактивным языком. */
-    --switch-tab-gap: 2px;
+    --switch-tab-gap: 0px;
 
     position: relative;
     display: grid;
@@ -145,6 +145,17 @@ const switchAriaLabel: Record<Lang, string> = {
     height: 30px;
     padding-inline: var(--switch-active-padding-inline);
     white-space: nowrap;
+  }
+
+  @media (max-width: 549px) {
+    .switch-visual {
+      --switch-tab-width: 40px;
+      height: 36px;
+      /* Меняйте это значение, чтобы настроить padding активного языка. */
+      --switch-active-padding-inline: 2px;
+      /* Расстояние между активным и неактивным языком. */
+      --switch-tab-gap: 2px;
+    }
   }
 
   .switch-thumb {
@@ -176,11 +187,19 @@ const switchAriaLabel: Record<Lang, string> = {
   }
 
   .switch-thumb::before {
-    background: linear-gradient(180deg, #383838 0%, rgba(43, 43, 43, 0) 100%);
+    background: linear-gradient(
+      180deg,
+      var(--color-switch-border-start) 0%,
+      var(--color-switch-border-end) 100%
+    );
   }
 
   .switch-thumb::after {
-    background: linear-gradient(180deg, #555555 0%, rgba(70, 70, 70, 0.3) 100%);
+    background: linear-gradient(
+      180deg,
+      var(--color-switch-border-hover-start) 0%,
+      var(--color-switch-border-hover-end) 100%
+    );
     opacity: 0;
     transition: opacity 160ms ease;
   }
@@ -215,7 +234,7 @@ const switchAriaLabel: Record<Lang, string> = {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #777777;
+    color: var(--color-text-muted-2);
     font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
@@ -225,12 +244,12 @@ const switchAriaLabel: Record<Lang, string> = {
   }
 
   .switch-label:hover {
-    color: #949494;
+    color: var(--color-switch-label-hover);
   }
 
   .switch-input:not(:checked) ~ .switch-visual .switch-label:first-of-type,
   .switch-input:checked ~ .switch-visual .switch-label:last-of-type {
-    color: #ffffff;
+    color: var(--color-text);
   }
 
   .switch-noscript-link {

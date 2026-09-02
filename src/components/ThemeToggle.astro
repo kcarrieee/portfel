@@ -1,0 +1,210 @@
+---
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const lightLabel = lang === 'ru' ? 'Переключить на светлую тему' : 'Switch to light theme';
+const darkLabel = lang === 'ru' ? 'Переключить на тёмную тему' : 'Switch to dark theme';
+---
+
+<div class="theme-greeting">
+  <span class="greeting greeting-evening">Hey, good evening</span>
+  <span class="greeting greeting-day">Hey, good day</span>
+  <button
+    class="theme-toggle"
+    type="button"
+    aria-label={lightLabel}
+    aria-pressed="true"
+    title={lightLabel}
+    data-theme-toggle
+    data-light-label={lightLabel}
+    data-dark-label={darkLabel}
+  >
+    <span class="theme-icon-stack" aria-hidden="true">
+      <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.2575 2.28787C4.8825 2.65537 2.25 5.52037 2.25 9.00037C2.25 10.7906 2.96116 12.5075 4.22703 13.7733C5.4929 15.0392 7.20979 15.7504 9 15.7504C12.4725 15.7504 15.3375 13.1254 15.7125 9.75037C15.78 9.15787 15.1275 8.68537 14.5575 9.03787C13.9453 9.42867 13.2392 9.64772 12.5133 9.67211C11.7874 9.69649 11.0682 9.52531 10.4311 9.17648C9.79404 8.82765 9.26241 8.314 8.89189 7.68927C8.52137 7.06454 8.32558 6.35171 8.325 5.62537C8.325 4.83037 8.5575 4.08037 8.955 3.45787C9.2925 2.95537 8.925 2.23537 8.2575 2.28787Z" fill="currentColor" />
+      </svg>
+      <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="9" cy="9" r="3.25" fill="currentColor" />
+        <path d="M9 1.5V3M9 15V16.5M16.5 9H15M3 9H1.5M14.303 3.697L13.242 4.758M4.758 13.242L3.697 14.303M14.303 14.303L13.242 13.242M4.758 4.758L3.697 3.697" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </span>
+  </button>
+</div>
+
+<script>
+  import { triggerHaptic } from '../utils/haptics';
+  import { playClickSound } from '../utils/sound';
+
+  type Theme = 'dark' | 'light';
+
+  const THEME_STORAGE_KEY = 'portfolio-theme';
+
+  function currentTheme(): Theme {
+    return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  }
+
+  function syncThemeControls(theme: Theme) {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      const isDark = theme === 'dark';
+      const label = isDark ? button.dataset.lightLabel : button.dataset.darkLabel;
+      button.setAttribute('aria-pressed', String(isDark));
+      if (label) {
+        button.setAttribute('aria-label', label);
+        button.title = label;
+      }
+    });
+
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      'content',
+      theme === 'light' ? '#fafafa' : '#111111',
+    );
+  }
+
+  function applyTheme(theme: Theme) {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // The theme still works when storage is unavailable.
+    }
+    syncThemeControls(theme);
+  }
+
+  function initThemeToggle() {
+    syncThemeControls(currentTheme());
+
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      if (button.dataset.initialized === 'true') return;
+      button.dataset.initialized = 'true';
+
+      // Pointer clicks should not leave a persistent focus ring; keyboard
+      // activation still keeps :focus-visible for accessibility.
+      button.addEventListener('pointerup', () => button.blur());
+
+      button.addEventListener('click', () => {
+        const nextTheme: Theme = currentTheme() === 'dark' ? 'light' : 'dark';
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const update = () => applyTheme(nextTheme);
+
+        if (!prefersReducedMotion && document.startViewTransition) {
+          document.startViewTransition(update);
+        } else {
+          update();
+        }
+
+        triggerHaptic();
+        playClickSound();
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initThemeToggle);
+</script>
+
+<style>
+  .theme-greeting {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--color-greeting);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .greeting-day {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .greeting-evening {
+    display: none;
+  }
+
+  :global(html[data-theme='light']) .greeting-day {
+    display: inline;
+  }
+
+  .theme-toggle {
+    visibility: hidden;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin: 0 -7px 0 1px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-theme-icon);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .theme-toggle:hover {
+    background-color: var(--color-control-hover);
+    color: var(--color-text);
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.9);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+
+  .theme-icon-stack {
+    position: relative;
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  .theme-icon {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 18px;
+    height: 18px;
+    transition:
+      opacity 260ms ease,
+      transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .theme-icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .theme-icon-sun {
+    opacity: 0;
+    transform: rotate(-50deg) scale(0.55);
+  }
+
+  :global(html[data-theme='light']) .theme-icon-moon {
+    opacity: 0;
+    transform: rotate(50deg) scale(0.55);
+  }
+
+  :global(html[data-theme='light']) .theme-icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle,
+    .theme-icon {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
