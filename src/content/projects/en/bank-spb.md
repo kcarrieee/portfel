@@ -1,6 +1,6 @@
 ---
-title: "Bank Saint Petersburg: Transparent Cashback"
-summary: "A cashback redesign that made complex conditions understandable and increased engagement with the section."
+title: "Bank Saint Petersburg: Cashback"
+summary: "A redesign that made complex conditions simple and increased engagement."
 year: "2023-2025"
 order: 3
 role: "Redesign"
@@ -71,36 +71,51 @@ I also reviewed published research on loyalty UX and behavioral economics to hel
 
 All hypotheses follow the same format:
 
-H1 · Actionable conditions widget. Swap the static conditions list for a dynamic widget with a personalized nudge: *"Spend ₽8,500 more before the month ends."* We measure condition completion rate and support contacts. We expect both to move — more completions, fewer tickets.
+<mark>H1 · Actionable conditions widget.</mark>
 
-H2 · Progress over prose. Replace the wall of text with real-time progress bars — total spend vs. threshold, category share. We measure completion rate and how long it takes someone to answer "did I hit my conditions?" Kill it if that task time doesn't drop.
+Swap the static conditions list for a dynamic widget with a personalized nudge: *"Spend ₽8,500 more before the month ends."* We measure condition completion rate andsupport contacts. We expect both to move — more completions, fewer tickets.
+
+<mark>H2 · Progress over prose.</mark> 
+
+Replace the wall of text with real-time progress bars — total spend vs. threshold, category share. We measure completion rate and how long it takes someone to answer "did I hit my conditions?" Kill it if that task time doesn't drop.
 
 ![Project research](../../../assets/bspb/bspb_image_widget.png)
 
-H3 · Interactive spend breakdown. A dashboard showing cashback by category plus a forecast for next month. We measure section engagement and 7-day retention. Kill it if retention doesn't differ from the control group.
+<mark>H3 · Interactive spend breakdown.</mark> 
+
+A dashboard showing cashback by category plus a forecast for next month. We measure section engagement and 7-day retention. Kill it if retention doesn't differ from the control group.
 
 ![Project research](../../../assets/bspb/bspb_image_statistics.png)
 
-H4 · Condition detail view. A dedicated view that shows exactly how to earn the maximum cashback rate — progress state, current status, clear guidance. We measure comprehension via a post-task survey and the share of users reaching the "conditions met" state.
+<mark>H4 · Condition detail view.</mark> 
+
+A dedicated view that shows exactly how to earn the maximum cashback rate — progress state, current status, clear guidance. We measure comprehension via a post-task survey and the share of users reaching the "conditions met" state.
 
 ![Project research](../../../assets/bspb/bspb_image_learnmore.png)
 
-H5 · Close the 1–5 blind zone. Show a preliminary cashback estimate during the transition period instead of effectively showing nothing. We measure "where's my money" support tickets in the first five days of each month.
+<mark>H5 · Close the 1–5 blind zone.</mark> 
+
+Show a preliminary cashback estimate during the transition period instead of effectively showing nothing. We measure "where's my money" support tickets in the first five days of each month.
 
 ![Project research](../../../assets/bspb/bspb_image_blind.png)
 
-H6 · Smart notifications.
+<mark>H6 · Smart notifications.</mark>
+
 Personalized nudges at the right moment — a push when someone's close to their limit, a reminder about a high-cashback category they've been underusing. We measure card activity and condition conversion, with a guardrail on notification fatigue. Kill it if push opt-outs grow faster than engagement.
 
 ![Project research](../../../assets/bspb/bspb_image_push.png)
 
-H7 · Forecast as a range, not a single number. Show "estimated ₽1,400–1,520" instead of one precise figure. A pinpoint forecast sets an expectation the final payout might not meet — and that gap drives complaints. A range manages expectations honestly. We measure "paid less than shown" support contacts.
+<mark>H7 · Forecast as a range, not a single number.</mark> 
 
-H8 · Different experience for different segments. New users get onboarding and education — "here's how cashback works." Power users get spend optimization tools. Research flagged two distinct segments with different needs, but we shipped one experience for both. We measure new user activation and power user engagement separately.
+Show "estimated ₽1,400–1,520" instead of one precise figure. A pinpoint forecast sets an expectation the final payout might not meet — and that gap drives complaints. A range manages expectations honestly. We measure "paid less than shown" support contacts.
 
-H9 · Contextual nudge at the point of decision. Surface the elevated cashback rate before or during a purchase — in the partner map, in the Apple/Google Pay overlay — not after the fact in the app. This changes actual spending behavior, not just awareness. It's a direct extension of the actionable widget from H1.
+<mark>H8 · Different experience for different segments.</mark> 
 
-H10 · Loss-aversion framing. "You're losing your 1.5% rate — spend ₽2,000 to keep it" vs. "spend ₽2,000 to earn 1.5%." Loss framing is consistently more motivating in financial contexts. That said, it edges into manipulation territory — mandatory guardrail on CSAT and pressure-related complaints. Kill it if complaints go up or CSAT drops.
+New users get onboarding and education — "here's how cashback works." Power users get spend optimization tools. Research flagged two distinct segments with different needs, but we shipped one experience for both. We measure new user activation and power user engagement separately.
+
+<mark>H9 · Contextual nudge at the point of decision. </mark>
+
+Surface the elevated cashback rate before or during a purchase — in the partner map, in the Apple/Google Pay overlay — not after the fact in the app. This changes actual spending behavior, not just awareness. It's a direct extension of the actionable widget from H1.
 
 ## Prioritization
 

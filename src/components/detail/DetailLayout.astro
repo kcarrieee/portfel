@@ -29,6 +29,9 @@ const {
 
 const t = useTranslations(lang);
 const tocHeadings = headings.filter((heading) => heading.depth === 2);
+const zoomImageLabel = lang === 'ru' ? 'Увеличить изображение' : 'Enlarge image';
+const lightboxLabel = lang === 'ru' ? 'Просмотр изображения' : 'Image preview';
+const closeLightboxLabel = lang === 'ru' ? 'Закрыть изображение' : 'Close image';
 ---
 
 <Layout lang={lang} title={title}>
@@ -66,10 +69,19 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
       )
     }
     <slot name="header" />
-    <div class="content">
+    <div class="content" data-image-zoom-content data-zoom-label={zoomImageLabel}>
       <slot />
     </div>
   </div>
+
+  <dialog class="image-lightbox" aria-label={lightboxLabel} data-image-lightbox>
+    <button class="lightbox-close" type="button" aria-label={closeLightboxLabel} data-lightbox-close>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M4.5 4.5L15.5 15.5M15.5 4.5L4.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+    <img class="lightbox-image" alt="" data-lightbox-image />
+  </dialog>
 </Layout>
 
 <script>
@@ -154,8 +166,99 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     videos.forEach((video) => observer.observe(video));
   }
 
+  function initTextHighlights() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.content').forEach((content) => {
+      const highlights = content.querySelectorAll<HTMLElement>('mark');
+      if (highlights.length === 0 || reduceMotion || !('IntersectionObserver' in window)) return;
+
+      content.classList.add('has-animated-highlights');
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add('is-highlighted');
+            observer.unobserve(entry.target);
+          });
+        },
+        { rootMargin: '0px 0px -12% 0px', threshold: 0.55 },
+      );
+
+      highlights.forEach((highlight) => observer.observe(highlight));
+    });
+  }
+
+  function getFullResolutionImageSource(image: HTMLImageElement) {
+    // Astro keeps the original-size optimized image in `src`, while `srcset`
+    // is capped by the configured responsive breakpoint (currently 1200px).
+    return image.getAttribute('src') || image.currentSrc || image.src;
+  }
+
+  function initImageZoom() {
+    const dialog = document.querySelector<HTMLDialogElement>('[data-image-lightbox]');
+    const lightboxImage = dialog?.querySelector<HTMLImageElement>('[data-lightbox-image]');
+    const closeButton = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+    if (!dialog || !lightboxImage || !closeButton) return;
+
+    document.documentElement.classList.remove('lightbox-open');
+
+    if (dialog.dataset.initialized !== 'true') {
+      dialog.dataset.initialized = 'true';
+
+      closeButton.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        document.documentElement.classList.remove('lightbox-open');
+        lightboxImage.removeAttribute('src');
+        lightboxImage.alt = '';
+      });
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-image-zoom-content]').forEach((content) => {
+      const zoomLabel = content.dataset.zoomLabel ?? 'Enlarge image';
+
+      content.querySelectorAll<HTMLImageElement>('img').forEach((image) => {
+        if (image.closest('.image-zoom-trigger')) return;
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'image-zoom-trigger';
+        trigger.setAttribute('aria-label', image.alt ? `${zoomLabel}: ${image.alt}` : zoomLabel);
+
+        const cue = document.createElement('span');
+        cue.className = 'image-zoom-cue';
+        cue.setAttribute('aria-hidden', 'true');
+        cue.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5" />
+            <path d="M12.5 12.5L17 17M8.5 6V11M6 8.5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        `;
+
+        image.before(trigger);
+        trigger.append(image, cue);
+        trigger.addEventListener('click', () => {
+          lightboxImage.src = getFullResolutionImageSource(image);
+          lightboxImage.alt = image.alt;
+          document.documentElement.classList.add('lightbox-open');
+          dialog.showModal();
+        });
+      });
+    });
+  }
+
   document.addEventListener('astro:page-load', initToc);
   document.addEventListener('astro:page-load', initContentVideos);
+  document.addEventListener('astro:page-load', initTextHighlights);
+  document.addEventListener('astro:page-load', initImageZoom);
+  document.addEventListener('astro:before-swap', () => {
+    document.documentElement.classList.remove('lightbox-open');
+  });
 </script>
 
 <style>
@@ -338,11 +441,226 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2);
     color: var(--color-text);
 }
 
+.content :global(mark) {
+    margin: -4px;
+    padding: 4px;
+    background-color: transparent;
+    background-image: linear-gradient(
+      90deg,
+      var(--color-text-highlight),
+      var(--color-text-highlight)
+    );
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 100% 100%;
+    color: #111111;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.content.has-animated-highlights :global(mark) {
+    background-size: 0% 100%;
+    color: inherit;
+}
+
+.content.has-animated-highlights :global(mark.is-highlighted) {
+    background-size: 100% 100%;
+    color: #111111;
+    transition: background-size 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .content :global(img) {
     width: 100%;
     height: fit-content;
     border-radius: 8px;
     margin-block: 20px;
+}
+
+.content :global(.image-zoom-trigger) {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin-block: 20px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #fff;
+    cursor: zoom-in;
+    font: inherit;
+    text-align: initial;
+}
+
+.content :global(.image-zoom-trigger img) {
+    position: relative;
+    z-index: 0;
+    display: block;
+    margin: 0;
+    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content :global(.image-zoom-trigger)::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.24);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+}
+
+.content :global(.image-zoom-cue) {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    background: rgba(16, 16, 16, 0.62);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content :global(.image-zoom-trigger:hover)::after,
+.content :global(.image-zoom-trigger:focus-visible)::after {
+    opacity: 1;
+}
+
+.content :global(.image-zoom-trigger:hover .image-zoom-cue),
+.content :global(.image-zoom-trigger:focus-visible .image-zoom-cue) {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.content :global(.image-zoom-trigger:hover img) {
+    transform: scale(1.01);
+}
+
+.content :global(.image-zoom-trigger:focus-visible) {
+    outline: 2px solid var(--color-text);
+    outline-offset: 3px;
+}
+
+.image-lightbox {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: clamp(20px, 4vw, 56px);
+    overflow: hidden;
+    border: 0;
+    background: rgba(7, 7, 7, 0.88);
+    color: #fff;
+    cursor: zoom-out;
+}
+
+.image-lightbox[open] {
+    display: grid;
+    place-items: center;
+    animation: lightbox-fade-in 180ms ease both;
+}
+
+.image-lightbox::backdrop {
+    background: transparent;
+    backdrop-filter: blur(10px);
+}
+
+.lightbox-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100dvh - clamp(40px, 8vw, 112px));
+    object-fit: contain;
+    border-radius: 8px;
+    cursor: default;
+    animation: lightbox-image-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lightbox-close {
+    position: fixed;
+    z-index: 1;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    display: grid;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    background: rgba(28, 28, 28, 0.72);
+    color: #fff;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition:
+      background-color 160ms ease,
+      transform 160ms ease;
+}
+
+.lightbox-close:hover {
+    background: rgba(54, 54, 54, 0.9);
+    transform: scale(1.04);
+}
+
+.lightbox-close:active {
+    transform: scale(0.96);
+}
+
+.lightbox-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+:global(html.lightbox-open) {
+    overflow: hidden;
+}
+
+@keyframes lightbox-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes lightbox-image-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+}
+
+@media (hover: none) {
+    .content :global(.image-zoom-cue) {
+      opacity: 0.86;
+      transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .content :global(.image-zoom-trigger img),
+    .content :global(.image-zoom-trigger)::after,
+    .content :global(.image-zoom-cue),
+    .image-lightbox[open],
+    .lightbox-image {
+      animation: none;
+      transition: none;
+    }
 }
 
 .content :global(video) {

@@ -1,6 +1,6 @@
 ---
 title: "SalesKit: E-commerce Platform"
-summary: "A modular commerce platform that helps businesses launch branded apps and websites in days."
+summary: "A modular commerce platform that helps businesses launch apps."
 year: "2023-2025"
 order: 7
 role: "Sole designer"

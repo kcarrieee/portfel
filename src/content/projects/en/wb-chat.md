@@ -1,6 +1,6 @@
 ---
 title: "WB Chat B2C / B2B"
-summary: "A retrieval-first approach to Saved Messages that keeps important content from becoming a junk drawer."
+summary: "A approach to Saved Messages that keeps content from becoming a junk drawer."
 year: "2026"
 order: 1
 # nda: true

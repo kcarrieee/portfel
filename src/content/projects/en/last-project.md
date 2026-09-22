@@ -1,6 +1,6 @@
 ---
 title: "Design System: How I led the team"
-summary: "How I led a 60+ component banking design system across two themes and multiple product teams."
+summary: "60+ component banking design system across multiple products."
 year: "2023-2025"
 order: 4
 role: "Design system team lead"

@@ -2,13 +2,14 @@
 interface Props {
   href: string;
   title: string;
+  summary: string;
   year: string;
   delay?: number;
   nda?: boolean;
   ndaTooltip?: string;
 }
 
-const { href, title, year, delay = 0, nda = false, ndaTooltip } = Astro.props;
+const { href, title, summary, year, delay = 0, nda = false, ndaTooltip } = Astro.props;
 
 // An NDA card still shows its cover and title, but renders as a plain
 // container instead of a link — no href at all, so there's nothing to
@@ -36,8 +37,11 @@ const Tag = nda ? 'div' : 'a';
   </div>
   <div class="meta">
     <div class="meta-main">
-      <p class="title">{title}</p>
-      {nda && <p class="nda">Under NDA</p>}
+      <div class="title-line">
+        <p class="title">{title}</p>
+        {nda && <p class="nda">Under NDA</p>}
+      </div>
+      <p class="summary">{summary}</p>
     </div>
     <p class="year">{year}</p>
   </div>
@@ -220,6 +224,15 @@ const Tag = nda ? 'div' : 'a';
 
   .meta-main {
     display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .title-line {
+    display: flex;
     align-items: baseline;
     gap: 8px;
     min-width: 0;
@@ -230,8 +243,26 @@ const Tag = nda ? 'div' : 'a';
     color: var(--color-text);
   }
 
-  :global(.projects.is-grid) .title,
+  .summary {
+    display: block;
+    width: 90%;
+    margin: 0;
+    color: var(--color-text-muted-2);
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  :global(.projects.is-grid) .title {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  :global(.projects.is-grid) .summary {
+    display: none;
+  }
+
   :global(.projects.is-grid) .year {
+    display: block;
     font-size: 13px;
     line-height: 18px;
   }

@@ -1,6 +1,6 @@
 ---
 title: "Voyager — modular chat system"
-summary: "A reusable messaging module for banking documents that reduced support calls and accelerated future launches."
+summary: "A reusable messaging module for banking documents."
 year: "2024"
 order: 5
 role: "Sole product designer"

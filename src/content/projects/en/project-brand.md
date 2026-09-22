@@ -1,6 +1,6 @@
 ---
 title: "Tulip Festival branding"
-summary: "A festival identity combining endangered tulips, Kalmyk culture, and practical wayfinding."
+summary: "A festival identity combining tulips and Kalmyk culture."
 year: "2024"
 order: 9
 role: "Sole designer"

@@ -1,6 +1,6 @@
 ---
 title: "AI concierge — Expi Travel"
-summary: "An AI travel concierge designed from first principles, from conversational onboarding to booking and payment."
+summary: "AI travel concierge from onboarding to booking."
 year: "2025-2026"
 order: 4
 role: "Sole product designer, from concept to launch"

@@ -1,6 +1,6 @@
 ---
 title: "Chanity brand direction and logo"
-summary: "A brand strategy and identity built around interweaving, connection, and independent participation."
+summary: "Built around interweaving and connection."
 year: "2026"
 order: 10
 role: "Sole designer"

@@ -7,6 +7,7 @@ import CoverVisual from './visuals/CoverVisual.astro';
 import VideoVisual from './visuals/VideoVisual.astro';
 
 import bspbImage from '../../assets/projects/project_image_bsp.png';
+import bspbImage2 from '../../assets/projects/bspb2.png';
 import wbImage from '../../assets/projects/wb_chat_333.png';
 import tulipImage from '../../assets/projects/tulip_br.png';
 import chanityImage from '../../assets/projects/chanity_minimal.png';
@@ -16,6 +17,7 @@ import expiImg from '../../assets/projects/expi_projectfinal.webp';
 import alfaBankVideo from '../../assets/projects/alfa_bank.mp4';
 import designSystemVideo from '../../assets/projects/design_system.mp4';
 import wbspace from "../../assets/projects/wb_workspace.webp"
+
 
 
 interface Props {
@@ -61,12 +63,14 @@ const listViewLabel = t('home.projectsListView');
           <ProjectCardLink
             href={href}
             title={project.data.title}
+            summary={project.data.summary}
             year={project.data.year ?? ''}
             delay={230 + index * 12}
             nda={project.data.nda}
             ndaTooltip={ndaTooltip}
           >
             {slug === 'bank-spb' && <CoverVisual image={bspbImage} alt={project.data.title} />}
+            {slug === 'bank-spb2' && <CoverVisual image={bspbImage2} alt={project.data.title} />}
             {slug === 'ai-concierge' && <CoverVisual image={expiImg} alt={project.data.title} />}
             {slug === 'wb-chat' && <CoverVisual image={wbImage} alt={project.data.title} />}
             {slug === 'last-project' && <VideoVisual src={designSystemVideo} />}
@@ -75,9 +79,10 @@ const listViewLabel = t('home.projectsListView');
             {slug === 'voyager' && <VideoVisual src={voyagerImage} />}
             {slug === 'saleskit' && <CoverVisual image={salesImage} alt={project.data.title} />}
             {slug === 'chanity-brand' && <CoverVisual image={chanityImage} alt={project.data.title} />}
-            {slug === 'wb-workspace' && <CoverVisual image={wbspace} alt={project.data.title} />}
+            {/* {slug === 'wb-workspace' && <CoverVisual image={wbspace} alt={project.data.title} />} */}
+
           </ProjectCardLink>
-          
+
         );
       })
     }

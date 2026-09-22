@@ -1,6 +1,6 @@
 ---
 title: "Alfa-Bank: Group Money Collection"
-summary: "A group money collection concept that separates shared funds, reduces organizer friction, and makes contributing easier."
+summary: "A group money collection that makes contributing easier."
 year: "2025"
 order: 6
 role: "Sole product designer"
@@ -128,4 +128,3 @@ I then mapped the core user flows required to support the scenario and prepared 
 
 I brought together the bank’s business context, publicly available research, and competitive benchmarking, then filtered the findings through clear product principles. This work formed the foundation of the final concept.
 ![UI](../../../assets/alfa/alfa_v2.webp)
-
